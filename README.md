@@ -35,3 +35,37 @@ can add products nearing their expiration date to the system, including details 
 discounted price, and expiration date. Customers can search for products based on criteria such as district 
 or product name and view nearby markets offering discounted items. They can also see how many days 
 remain until a product’s expiration date.
+
+
+INITIAL ENDPOINT DESIGNS:
+
+PUBLIC ENDPOINTS:
+GET  /
+GET  /login
+POST /login
+GET  /register
+POST /register
+GET  /verify-email
+POST /verify-email
+POST /logout
+GET  /products - list of all products that customer and market users can view
+GET  /product/:id - details of a specific product
+
+CONSUMER ENDPOINTS:
+GET  /cart - view shopping cart contents
+POST /cart/add - add product to cart
+POST /cart/update - update product quantity in cart
+POST /cart/remove - remove product from cart
+POST /cart/purchase - complete purchase
+GET  /profile - customer profile page
+POST /profile/edit - update customer profile
+
+MARKET ENDPOINTS:
+GET  /dashboard - market overview and products list
+GET  /dashboard/product/:id/new - form to add new product
+POST /dashboard/product - create new product
+GET  /dashboard/product/:id/edit - form to edit existing product
+POST /dashboard/product/:id/edit - update existing product
+POST /dashboard/product/:id/delete - delete existing product
+GET  /dashboard/profile - market profile page
+POST /dashboard/profile/edit - update market profile
