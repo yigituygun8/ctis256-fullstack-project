@@ -1,0 +1,29 @@
+{
+  "name": "uygun_markets",
+  "version": "1.0.0",
+  "description": "A full-stack web application for markets built for CTIS 256.",
+  "homepage": "https://github.com/yigituygun8/ctis256-fullstack-project#readme",
+  "bugs": {
+    "url": "https://github.com/yigituygun8/ctis256-fullstack-project/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yigituygun8/ctis256-fullstack-project.git"
+  },
+  "license": "ISC",
+  "author": "Osman Yiğit Uygun, Arda Planalı, Artun Konyalı, Gökşin Özdinç",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon server.js"
+  },
+  "dependencies": {
+    "ejs": "^5.0.2",
+    "express": "^5.2.1",
+    "express-validator": "^7.3.2",
+    "multer": "^2.1.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  }
+}
