@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!-- basket body -->
+  <rect x="4" y="26" width="56" height="34" rx="6" fill="#1a5e2e"/>
+  <!-- basket handle -->
+  <path d="M12 26 Q32 4 52 26" fill="none" stroke="#1a5e2e" stroke-width="5" stroke-linecap="round"/>
+  <!-- basket weave lines -->
+  <line x1="22" y1="26" x2="22" y2="60" stroke="#2d7a45" stroke-width="1.5"/>
+  <line x1="32" y1="26" x2="32" y2="60" stroke="#2d7a45" stroke-width="1.5"/>
+  <line x1="42" y1="26" x2="42" y2="60" stroke="#2d7a45" stroke-width="1.5"/>
+  <line x1="4" y1="38" x2="60" y2="38" stroke="#2d7a45" stroke-width="1.5"/>
+  <line x1="4" y1="50" x2="60" y2="50" stroke="#2d7a45" stroke-width="1.5"/>
+  <!-- produce: orange -->
+  <circle cx="18" cy="21" r="9" fill="#f5821f"/>
+  <!-- produce: green -->
+  <circle cx="32" cy="17" r="10" fill="#4caf50"/>
+  <!-- produce: yellow -->
+  <circle cx="46" cy="21" r="8" fill="#f5c518"/>
+  <!-- leaf -->
+  <ellipse cx="57" cy="11" rx="7" ry="4" fill="#4caf50" transform="rotate(-30,57,11)"/>
+  <!-- % badge -->
+  <circle cx="54" cy="54" r="10" fill="#f5c518"/>
+  <text x="54" y="58" font-family="Arial,sans-serif" font-size="11" font-weight="700" fill="#1a5e2e" text-anchor="middle">%</text>
+</svg>
