@@ -294,7 +294,6 @@ nav {
 .feat-card:hover {
   box-shadow: 8px 14px rgba(26,74,46,0.12);
   transform: scale(1.02);
-  cursor: pointer;
 }
 .feat-icon {
   font-size: 1.6rem;
