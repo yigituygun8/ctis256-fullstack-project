@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Uygun Markets</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body id="top">
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-inner">
+      <a href="#top" class="nav-brand">UYGUN MARKETS</a>
+      <div class="nav-links">
+        <a href="/products">Browse Deals</a>
+        <% if (user) { %>
+          <% if (user.type === 'market') { %>
+            <a href="/dashboard">Dashboard</a>
+          <% } else { %>
+            <a href="/cart">Cart</a>
+          <% } %>
+          <form action="/logout" method="POST">
+            <button type="submit" class="nav-logout">Log out</button>
+          </form>
+        <% } else { %>
+          <a href="/login">Log in</a>
+          <a href="/register" class="btn-primary">Get Started</a>
+        <% } %>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-content">
+      <p class="hero-tag">Save money | Reduce waste</p>
+      <h1>Fresh deals at <span class="highlight">uygun prices</span> near you</h1>
+      <p class="hero-sub">
+        Uygun Markets connects shoppers with local markets selling near-expiry
+        products at discounted prices. Good for your wallet, good for the planet.
+      </p>
+      <div class="hero-ctas">
+        <a href="/products" class="btn-primary">Find deals near me</a>
+        <% if (!user) { %>
+          <a href="/register" class="btn-secondary">List your market</a>
+        <% } %>
+      </div>
+    </div>
+    <div class="hero-image">
+      <img src="/images/UYGUN_MARKETS_LOGO.png" alt="Uygun Markets logo"/>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="how-section">
+    <div class="container">
+      <p class="section-tag">How it works</p>
+      <h2>Simple for everyone</h2>
+
+      <div class="how-container">
+        <div class="how-col">
+          <p class="col-label consumer-label">For shoppers</p>
+          <div class="step">
+            <span class="step-num">1</span>
+            <div>
+              <h4>Create a free account</h4>
+              <p>Sign up with your personal details and choose your city and district.</p>
+            </div>
+          </div>
+          <div class="step">
+            <span class="step-num">2</span>
+            <div>
+              <h4>Search for deals nearby</h4>
+              <p>Search by any keyword and see discounted products sorted by distance.</p>
+            </div>
+          </div>
+          <div class="step">
+            <span class="step-num">3</span>
+            <div>
+              <h4>Add to cart and buy</h4>
+              <p>Add items to your cart, see the total and enjoy your purchase!</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="how-col">
+          <p class="col-label market-label">For markets</p>
+          <div class="step">
+            <span class="step-num step-orange">1</span>
+            <div>
+              <h4>Register your market</h4>
+              <p>Verify your email and add your market info. Free and quick.</p>
+            </div>
+          </div>
+          <div class="step">
+            <span class="step-num step-orange">2</span>
+            <div>
+              <h4>List near-expiry products</h4>
+              <p>Add items with a discounted price, expiry date and a photo.</p>
+            </div>
+          </div>
+          <div class="step">
+            <span class="step-num step-orange">3</span>
+            <div>
+              <h4>Manage your dashboard</h4>
+              <p>Edit products and keep track of what is expiring soon.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="features-section">
+    <div class="container">
+      <p class="section-tag">Why Uygun Markets?</p>
+      <h2>Everything you need</h2>
+
+      <div class="features-container">
+        <div class="feat-card">
+          <div class="feat-icon">📍</div>
+          <h3>Location-aware search</h3>
+          <p>Results sorted by your district so the closest deals appear first.</p>
+        </div>
+        <div class="feat-card">
+          <div class="feat-icon">🕐</div>
+          <h3>Expiry countdown</h3>
+          <p>Every product shows exactly how many days remain before expiry.</p>
+        </div>
+        <div class="feat-card">
+          <div class="feat-icon">🛒</div>
+          <h3>Persistent cart</h3>
+          <p>Your cart is saved to your account and stays between sessions.</p>
+        </div>
+        <div class="feat-card">
+          <div class="feat-icon">✉️</div>
+          <h3>Email verification</h3>
+          <p>All accounts are verified by email for a trusted community.</p>
+        </div>
+        <div class="feat-card">
+          <div class="feat-icon">🏪</div>
+          <h3>Market dashboard</h3>
+          <p>Markets see all listings with expired items clearly flagged.</p>
+        </div>
+        <div class="feat-card">
+          <div class="feat-icon">🌱</div>
+          <h3>Less food waste</h3>
+          <p>Every purchase prevents a product from being thrown away.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA BAND -->
+  <section class="cta-band">
+    <div class="container">
+      <h2>Ready to join Uygun Markets?</h2>
+      <p>Free for everyone. Sign up in under a minute.</p>
+      <div class="cta-buttons">
+        <a href="/register?type=consumer" class="btn-white">I'm a shopper</a>
+        <a href="/products" class="btn-outline-white">Browse first</a>
+        <a href="/register?type=market" class="btn-white">I'm a market</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-inner">
+      <p class="footer-brand">UYGUN MARKETS</p>
+      <p class="footer-copy">© 2026 · Better Prices, Less Waste, Better Tomorrow 🌱</p>
+      <div class="footer-links">
+        <a href="/products">Browse</a>
+        <a href="/login">Log In</a>
+        <a href="/register">Sign Up</a>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>
