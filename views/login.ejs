@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    
+    <form action="/login" method="post">
+        <div class="container auth-field">
+            <h1>LOGIN</h1>
+            <div class="input-field">
+                <input type="text" name="email" value="<%= form.email %>" placeholder=" ">
+                <span class="input-info placeholder">Email</span>
+                <% if(errors.email) { %>
+                    <span class="input-error"><%= errors.email.msg %></span>
+                <% } %>
+            </div>
+
+            <div class="input-field">
+                <input type="password" name="password" value="<%= form.password %>" placeholder=" ">
+                <span class="input-info">Password</span>
+                <% if(errors.password) { %>
+                    <span class="input-error"><%= errors.password.msg %></span>
+                <% } %>
+            </div>
+
+            <a href="/register">No Account? Create one!</a>
+            <button class="btn-primary">LOGIN</button>
+        </div>
+    </form>
+
+
+</body>
+</html>
