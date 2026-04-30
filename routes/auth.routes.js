@@ -1,13 +1,29 @@
 import express from "express";
+import { body, validationResult } from "express-validator";
 const router = express.Router();
 
 // Login endpoints
 router.get('/login', (req, res) => {
-  // GET /login
+
+  res.render('login', { form : {}, errors: {}});
 });
 
-router.post('/login', (req, res) => {
-  // POST /login
+router.post('/login', 
+  body("email").notEmpty().withMessage("*Email field must be filled"),
+  body("password").notEmpty().withMessage("*Password field must be filled")
+  ,(req, res) => {
+  
+  const errors = validationResult(req);
+
+  if(!errors.isEmpty()){
+    //Sended errors with .mapped() for easier checking
+    res.render('login', { form: req.body, errors : errors.mapped()});
+  } else{
+    //TO-DO: Email and Password check
+
+    res.redirect("/")
+  }
+
 });
 
 // Register endpoints
