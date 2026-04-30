@@ -30,7 +30,17 @@
                 <% } %>
             </div>
 
+            <div class="user-type-field">
+                <span>I am a</span>
+                <input type="radio" name="user_type" value="0" <%= form.user_type === '0' ? 'checked' : "" %> ><span>Customer</span>
+                <input type="radio" name="user_type" value="1" <%= form.user_type === '1' ? 'checked' : "" %> ><span>Market</span>
+                <% if(errors.user_type) { %>
+                    <span class="input-error"><%= errors.user_type.msg %></span>
+                <% } %>
+            </div>
+
             <a href="/register">No Account? Create one!</a>
+
             <button class="btn-primary">LOGIN</button>
         </div>
     </form>

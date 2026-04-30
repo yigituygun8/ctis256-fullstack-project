@@ -10,16 +10,18 @@ router.get('/login', (req, res) => {
 
 router.post('/login', 
   body("email").notEmpty().withMessage("*Email field must be filled"),
-  body("password").notEmpty().withMessage("*Password field must be filled")
+  body("password").notEmpty().withMessage("*Password field must be filled"),
+  body("user_type").notEmpty().withMessage("*Must select at least 1 option")
   ,(req, res) => {
-  
+
+
   const errors = validationResult(req);
 
   if(!errors.isEmpty()){
     //Sended errors with .mapped() for easier checking
     res.render('login', { form: req.body, errors : errors.mapped()});
   } else{
-    //TO-DO: Email and Password check
+    //TO-DO: Email and Password check + user_type check
 
     res.redirect("/")
   }

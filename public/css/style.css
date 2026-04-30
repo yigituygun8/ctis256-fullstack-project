@@ -366,6 +366,19 @@ nav {
   border-radius: 20px;
 }
 
+.user-type-field{
+  position: relative;
+  display: flex;
+  background-color: var(--cream);
+  justify-content: space-around;
+  align-items: center;
+  gap: 12px;
+  width: 80%;
+  padding: 10px;
+  border-radius: 20px;
+
+}
+
 .input-error{
   font-size: 16px;
   position: absolute;
