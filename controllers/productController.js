@@ -79,11 +79,11 @@ export const updateProduct = async (req, res) => {
         
         res.redirect('/dashboard');
     } catch (error) {
-        res.status(500).send("Product could not updated");
+        res.status(500).send("Product could not updated.");
     }
 };
 
-// 7. POST /dashboard/product/:id/delete - Ürünü sil (Delete)[cite: 1]
+// Delete product
 export const deleteProduct = async (req, res) => {
     try {
         const { id } = req.params;
@@ -94,7 +94,7 @@ export const deleteProduct = async (req, res) => {
         
         res.redirect('/dashboard');
     } catch (error) {
-        res.status(500).send("Silme işlemi başarısız.");
+        res.status(500).send("Product could not deleted.");
     }
 };
 
