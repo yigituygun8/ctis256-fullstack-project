@@ -1,4 +1,4 @@
-import { db } from "./db/dbpool.js";
+import { db } from "./config/dbpool.js";
 
 // Update Profile
 
