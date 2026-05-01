@@ -81,7 +81,7 @@ export const updateProduct = async (req, res) => {
     }
 };
 
-// 7. POST /dashboard/product/:id/delete - Ürünü sil (Delete)[cite: 1]
+// Delete product
 export const deleteProduct = async (req, res) => {
     try {
         const { id } = req.params;
