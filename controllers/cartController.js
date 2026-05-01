@@ -1,4 +1,4 @@
-import { db } from "./config/dbpool.js";
+import { pool } from "../config/dbpool.js";
 
 // Add to Cart
 

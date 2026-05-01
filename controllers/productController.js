@@ -1,18 +1,16 @@
-import { db } from "./config/dbpool.js";
+import { pool } from "../config/dbpool.js";
 
-import { pool } from "../sql/dbpool.js";
-
-// List all products
+// List all products with market information
 export const getAllProducts = async (req, res) => {
     try {
         // Show only not expired products
-        const sql = `SELECT p.*, m.marketName FROM products p 
-                     JOIN markets m ON p.marketID = m.marketID 
+        const sql = `SELECT p.*, m.marketName FROM product p 
+                     JOIN Market m ON p.marketID = m.marketID 
                      WHERE p.expirationDate >= CURDATE()`;
         const [rows] = await pool.query(sql);
-        res.render('products/index', { products: rows });
+        res.render('products', { products: rows });
     } catch (error) {
-        res.status(500).send("Error while getting all products.");
+        res.status(500).send("Error while getting all products." + error);
     }
 };
 
@@ -21,16 +19,16 @@ export const getProductDetails = async (req, res) => {
     try {
         const { id } = req.params;
         const sql = `SELECT p.*, m.marketName, m.city, m.district 
-                     FROM products p 
-                     JOIN markets m ON p.marketID = m.marketID 
+                     FROM product p 
+                     JOIN Market m ON p.marketID = m.marketID 
                      WHERE p.itemID = ?`;
         const [rows] = await pool.query(sql, [id]);
         
-        if (rows.length === 0) return res.status(404).send("Product nor found");
+        if (rows.length === 0) return res.status(404).send("Product not found");
         
-        res.render('products/detail', { product: rows[0] });
+        res.render('product-details', { product: rows[0] });
     } catch (error) {
-        res.status(500).send("Error while getting details");
+        res.status(500).send("Error while getting details" + error);
     }
 };
 
@@ -39,13 +37,13 @@ export const getMarketDashboard = async (req, res) => {
     try {
         const marketID = req.session.userId; // marketID comes from session
         const sql = `SELECT *, (expirationDate < CURDATE()) as isExpired 
-                     FROM products WHERE marketID = ?`;
+                     FROM product WHERE marketID = ?`;
         const [rows] = await pool.query(sql, [marketID]);
         
         // Show only not expired products
         res.render('market/dashboard', { products: rows });
     } catch (error) {
-        res.status(500).send("Error while getting products");
+        res.status(500).send("Error while getting products" + error);
     }
 };
 
@@ -55,13 +53,13 @@ export const createProduct = async (req, res) => {
         const { name, stock, basePrice, discountPrice, expirationDate, image } = req.body;
         const marketID = req.session.userId;
 
-        const sql = `INSERT INTO products (marketID, name, stock, basePrice, discountPrice, expirationDate, image) 
+        const sql = `INSERT INTO product (marketID, name, stock, basePrice, discountPrice, expirationDate, image) 
                      VALUES (?, ?, ?, ?, ?, ?, ?)`;
         await pool.query(sql, [marketID, name, stock, basePrice, discountPrice, expirationDate, image]);
         
         res.redirect('/dashboard'); // After insertion, go back to the dashboard
     } catch (error) {
-        res.status(500).send("Product could not added.");
+        res.status(500).send("Product could not added." + error);
     }
 };
 
@@ -72,14 +70,14 @@ export const updateProduct = async (req, res) => {
         const { name, stock, basePrice, discountPrice, expirationDate, image } = req.body;
         const marketID = req.session.userId;
 
-        const sql = `UPDATE products 
+        const sql = `UPDATE product 
                      SET name = ?, stock = ?, basePrice = ?, discountPrice = ?, expirationDate = ?, image = ? 
                      WHERE itemID = ? AND marketID = ?`;
         await pool.query(sql, [name, stock, basePrice, discountPrice, expirationDate, image, id, marketID]);
         
         res.redirect('/dashboard');
     } catch (error) {
-        res.status(500).send("Product could not updated");
+        res.status(500).send("Product could not updated" + error);
     }
 };
 
@@ -89,12 +87,12 @@ export const deleteProduct = async (req, res) => {
         const { id } = req.params;
         const marketID = req.session.userId;
 
-        const sql = "DELETE FROM products WHERE itemID = ? AND marketID = ?";
+        const sql = "DELETE FROM product WHERE itemID = ? AND marketID = ?";
         await pool.query(sql, [id, marketID]);
         
         res.redirect('/dashboard');
     } catch (error) {
-        res.status(500).send("Silme işlemi başarısız.");
+        res.status(500).send("Product could not deleted" + error);
     }
 };
 
@@ -109,7 +107,7 @@ export const searchProducts = async (req, res) => {
         const searchKeyword = `%${keyword}%`;
 
         // City and district informations
-        const userSql = "SELECT city, district FROM consumers WHERE consumerID = ?";
+        const userSql = "SELECT city, district FROM Consumer WHERE consumerID = ?";
         const [userData] = await pool.query(userSql, [consumerID]);
 
         if (userData.length === 0) {
@@ -121,8 +119,8 @@ export const searchProducts = async (req, res) => {
         // Search the products which are in user's city and district
         const productSql = `
             SELECT p.*, m.marketName, m.district as marketDistrict
-            FROM products p
-            JOIN markets m ON p.marketID = m.marketID
+            FROM product p
+            JOIN Market m ON p.marketID = m.marketID
             WHERE p.name LIKE ? 
             AND p.expirationDate >= CURDATE()
             AND m.city = ?
@@ -130,7 +128,7 @@ export const searchProducts = async (req, res) => {
             LIMIT ? OFFSET ?
         `;
 
-        const [results] = await pool.query("productSql", [
+        const [results] = await pool.query(productSql, [
             searchKeyword, 
             userCity, 
             userDistrict, 
@@ -146,7 +144,6 @@ export const searchProducts = async (req, res) => {
         });
 
     } catch (error) {
-        console.error("Error while searching: ", error);
-        res.status(500).send("Error while searching.");
+        res.status(500).send("Error while searching." + error);
     }
 };
