@@ -9,9 +9,8 @@ router.get('/login', (req, res) => {
 });
 
 router.post('/login', 
-  body("email").notEmpty().withMessage("*Email field must be filled"),
-  body("password").notEmpty().withMessage("*Password field must be filled"),
-  body("user_type").notEmpty().withMessage("*Must select at least 1 option")
+  body("email").notEmpty().withMessage("*This field must be filled"),
+  body("password").notEmpty().withMessage("*This field must be filled")
   ,(req, res) => {
 
 
@@ -21,7 +20,7 @@ router.post('/login',
     //Sended errors with .mapped() for easier checking
     res.render('login', { form: req.body, errors : errors.mapped()});
   } else{
-    //TO-DO: Email and Password check + user_type check
+    //TO-DO: Email and Password check
 
     res.redirect("/")
   }
@@ -30,11 +29,30 @@ router.post('/login',
 
 // Register endpoints
 router.get('/register', (req, res) => {
-  // GET /register
+  const user_type = req.query.type ?? 'cust';
+  res.render('register', { form : {}, errors: {}, user_type});
 });
 
-router.post('/register', (req, res) => {
-  // POST /register
+router.post('/register', 
+  body("email").notEmpty().withMessage("*This field must be filled"),
+  body("password").notEmpty().withMessage("*This field must be filled"),
+  body("city").notEmpty().withMessage("*This field must be filled"),
+  body("district").notEmpty().withMessage("*This field must be filled"),
+  body("fullName").if(body("user_type").equals("cust")).notEmpty().withMessage("*This field must be filled"),
+  body("marketName").if(body("user_type").equals("market")).notEmpty().withMessage("*This field must be filled")
+  ,(req, res) => {
+  
+  const errors = validationResult(req);
+  const user_type = req.body.user_type || req.query.type || 'cust';
+
+  if(!errors.isEmpty()){
+    //Sended errors with .mapped() for easier checking
+    res.render('register', { form: req.body, errors : errors.mapped(), user_type});
+  } else{
+    //TO-DO: Verification
+
+    res.redirect("/")
+  }
 });
 
 // Email verification endpoints
