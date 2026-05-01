@@ -4,8 +4,8 @@ const router = express.Router();
 
 // Login endpoints
 router.get('/login', (req, res) => {
-
-  res.render('login', { form : {}, errors: {}});
+  const user_type = req.query.type || 'consumer'; // Default to 'consumer' if no type is provided
+  res.render('login', { form : {}, errors: {}, user_type});
 });
 
 router.post('/login', 
@@ -13,12 +13,13 @@ router.post('/login',
   body("password").notEmpty().withMessage("*This field must be filled")
   ,(req, res) => {
 
+  const user_type = req.body.user_type || req.query.type || 'consumer';
 
   const errors = validationResult(req);
 
   if(!errors.isEmpty()){
     //Sended errors with .mapped() for easier checking
-    res.render('login', { form: req.body, errors : errors.mapped()});
+    res.render('login', { form: req.body, errors : errors.mapped(), user_type});
   } else{
     //TO-DO: Email and Password check
 

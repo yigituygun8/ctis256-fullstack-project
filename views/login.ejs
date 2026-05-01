@@ -13,11 +13,36 @@
         .btn-primary {
             cursor: pointer;
         }
+        .type-toggle{
+            position: fixed;
+            top: 24px;
+            left: 400px;
+            z-index: 1000;
+            display: inline-flex;
+            gap: 8px;
+            margin: 8px 0 18px 0;
+        }
+        .type-toggle a{
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            color: var(--green-dark, #1a4a2e);
+            background: rgba(0,0,0,0.03);
+        }
+        .type-toggle a.active{
+            background: var(--green-pale, #e8f5ee);
+            font-weight: 700;
+        }
     </style>
 </head>
 <body>
     <a class="btn-primary back-home" href="/">Back to Home Page</a>
+    <div class="type-toggle">
+        <a href="/login?type=consumer" class="<%= user_type === 'consumer' ? 'active' : '' %>">Consumer</a>
+        <a href="/login?type=market" class="<%= user_type === 'market' ? 'active' : '' %>">Market</a>
+    </div>
     <form action="/login" method="post">
+        <input type="hidden" name="user_type" value="<%= user_type %>">
         <div class="container auth-field">
             <h1>L O G I N</h1>
             <div class="input-field">
