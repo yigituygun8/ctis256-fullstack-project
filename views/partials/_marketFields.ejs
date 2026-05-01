@@ -1,0 +1,27 @@
+<div class="container auth-field">
+            <div class="input-field">
+                <input type="text" name="marketName" value="<%= form.marketName %>" placeholder=" ">
+                <span class="input-info placeholder">Market Name</span>
+                <% if(errors.marketName) { %>
+                    <span class="input-error"><%= errors.marketName.msg %></span>
+                <% } %>
+            </div>
+
+            <div class="input-field">
+                <input type="text" name="city" value="<%= form.city %>" placeholder=" ">
+                <span class="input-info">City</span>
+                <% if(errors.city) { %>
+                    <span class="input-error"><%= errors.city.msg %></span>
+                <% } %>
+            </div>
+
+            <div class="input-field">
+                <input type="text" name="district" value="<%= form.district %>" placeholder=" ">
+                <span class="input-info">District</span>
+                <% if(errors.district) { %>
+                    <span class="input-error"><%= errors.district.msg %></span>
+                <% } %>
+            </div>
+
+            <a href="/register?type=cust" class="btn-primary">For Customers -></a>
+</div>
