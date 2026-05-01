@@ -424,6 +424,14 @@ nav {
   color: var(--green-dark);
 }
 
+.back-home {
+  position: fixed;
+  top: 24px;
+  left: 24px;
+  z-index: 1000;
+  margin: 0;
+}
+
 /* FOOTER */
 footer {
   background: var(--text-dark);
