@@ -32,11 +32,23 @@ export const registerEmail = async (req, res) => {
 
     if(!errors.isEmpty()){
         //Sended errors with .mapped() for easier checking
-        res.render('register', { form: req.body, errors : errors.mapped(), user_type});
+        res.render('register', { form: req.body, errors : errors.mapped(), user_type, error: {}});
     } else {
+
+        try {
+            const table = user_type === "consumer" ? "Consumer" : "Market";
+            const [rows] = await pool.query(`select * from ${table} where email = ?`, [req.body.email]);
+            if(rows.length !== 0){
+                const error = { field: "email", msg: "*This email already exists"};
+                return res.render('register', { form : req.body, errors: {}, user_type, error});
+            }
+        } catch (error) {
+            res.status(500).send("Error while registering the user." + error);
+        }
+
         //TO-DO: Verification
         //extract the inputs from the form according to user type
-        const { email, password, city, district, user_type, fullName, marketName } = req.body;
+        const { email, password, city, district, fullName, marketName } = req.body;
         const name = (user_type === "consumer") ? fullName : marketName;
 
         //create the user to be verified
@@ -75,12 +87,22 @@ export const verifyEmail = async (req, res) => {
         res.render("verify", { form : req.body, errors: errors.mapped() })
     }
     else{
+    
         //Queries for adding the user to the db using the user_to_verify from session. Fields are -> email, password, city, district, name, user_type
-        //Delete the user_to_verify from session after adding it to the db if you want
+        try {
+            const table = req.session.user_to_verify.user_type === "consumer" ? "Consumer" : "Market";
+            const insertUser = req.session.user_to_verify;
 
+            const [result] = await pool.query(`insert into ${table} (email, customerName, password, city, district) values ( ?, ?, ?, ?, ? )`,
+                [insertUser.email, insertUser.name, insertUser.password, insertUser.city, insertUser.district]
+            )
 
-        
-        res.redirect("/login")
+            delete req.session.user_to_verify;
+            res.redirect("/login")
+
+        } catch (error) {
+            res.status(500).send("Error while adding the user." + error);
+        }
     }
 
 };
@@ -93,21 +115,39 @@ export const loginUser = async (req, res) => {
     
       if(!errors.isEmpty()){
         //Sended errors with .mapped() for easier checking
-        res.render('login', { form: req.body, errors : errors.mapped(), user_type});
+        res.render('login', { form: req.body, errors : errors.mapped(), user_type, loginError: {}});
       } else{
         //TO-DO: Email and Password check with db
         const email = req.body.email;
-        const hashed_password = await bcrypt.hash(req.body.password, 10);
+        const password = req.body.password
         // console.log(email);
         // console.log(hashed_password);
-        // user_type is already defined its either market or consumer and the fields are defined at the top
+
+        const table = user_type === "consumer" ? "Consumer" : "Market";
+
+        try {
+            const [rows] = await pool.query(`select * from ${table} where email = ?`, [email]);
+            const [user] = rows;
+
+            if(!user){
+                const loginError = { field: "email", msg: "*No user with this email" }
+                return res.render('login', { form: req.body, errors : errors.mapped(), user_type, loginError});
+            }
+            
+            if(!(await bcrypt.compare(password, user.password))){
+                const loginError = { field: "password", msg: "*Wrong password" }
+                return res.render('login', { form: req.body, errors : errors.mapped(), user_type, loginError});
+            }
+
+            req.session.activeUser = user
+            req.session.user_type = user_type
+    
+            res.redirect("/")
+
+        } catch (error) {
+            res.status(500).send("Error while getting the user." + error);
+        }
         
 
-
-        // Uncommment this once the database part is done
-        // req.session.activeUser = req.session.user_to_verify;
-        // delete req.session.user_to_verify;
-
-        res.redirect("/")
       }
 };
