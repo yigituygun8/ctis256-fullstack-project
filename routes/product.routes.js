@@ -1,15 +1,16 @@
 import express from "express";
 const router = express.Router();
+import { pool } from "../config/dbpool.js";
+import { getAllProducts, getProductDetails, searchProducts } from "../controllers/productController.js";
 
 // Get all products
-router.get('/products', (req, res) => {
-  // GET /products - list of all products
-});
+router.get('/products', getAllProducts);
 
-// Get specific product
-router.get('/product/:id', (req, res) => {
-  // GET /product/:id - details of a specific product
-});
+// Get specific product with id
+router.get('/product/:id', getProductDetails);
+
+// Search products with keyword and pagination
+router.get('/search', searchProducts);
 
 // Market dashboard - get dashboard
 router.get('/dashboard', (req, res) => {

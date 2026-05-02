@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Browse Deals - Uygun Markets</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-inner">
+      <a href="/" class="nav-brand">UYGUN MARKETS</a>
+      <div class="nav-links">
+        <a href="/products">Browse Deals</a>
+        <% if (user) { %>
+          <% if (user.type === 'market') { %>
+            <a href="/dashboard">Dashboard</a>
+          <% } else { %>
+            <a href="/cart">Cart</a>
+          <% } %>
+          <form action="/logout" method="POST">
+            <button type="submit" class="nav-logout">Log out</button>
+          </form>
+        <% } else { %>
+          <a href="/login">Log in</a>
+          <a href="/register" class="btn-primary">Get Started</a>
+        <% } %>
+      </div>
+    </div>
+  </nav>
+
+  <!-- PAGE HEADER -->
+   <% if (user && user.type === 'consumer') { %>
+    <div class="page-header">
+        <div class="container">
+        <p class="section-tag">Discounted & Near Expiry</p>
+        <h1 class="page-title">Deals near you</h1>
+        <form class="search-bar" action="/search" method="GET">
+            <input
+            type="text"
+            name="keyword"
+            placeholder='Search products… e.g. "toblerone"'
+            value="<%= typeof keyword !== 'undefined' ? keyword : '' %>"
+            autocomplete="off"
+            />
+            <button type="submit" class="btn-primary">Search</button>
+        </form>
+        </div>
+    </div>
+    <% } else { %>
+    <div class="page-header">
+        <div class="container">
+        <p class="section-tag">Discounted & Near Expiry</p>
+        <h1 class="page-title">Browse all deals</h1>
+        <h2 class="sign-warning">Sign in as a consumer to see deals near you!</h2>
+        </div>
+    <% } %>
+
+  <!-- MAIN LAYOUT: 3/4 products + 1/4 cart -->
+  <div class="products-layout container">
+
+    <!-- LEFT: PRODUCT LIST -->
+    <div class="products-col">
+
+      <% if (products.length === 0) { %>
+        <div class="empty-state">
+          <span class="empty-icon">🔍</span>
+          <p>No products found. Try a different keyword or check back later.</p>
+        </div>
+      <% } else { %>
+        <div class="product-list">
+          <% products.forEach(product => { %>
+            <%
+              const expDate = new Date(product.expirationDate);
+              const today = new Date();
+              today.setHours(0,0,0,0);
+              const daysLeft = Math.ceil((expDate - today) / (1000 * 60 * 60 * 24));
+              const urgency = daysLeft <= 2 ? 'urgent' : daysLeft <= 5 ? 'soon' : 'ok';
+              const savings = Math.round(((product.basePrice - product.discountPrice) / product.basePrice) * 100);
+            %>
+            <div class="product-card">
+              <a href="/product/<%= product.itemID %>">
+                <div class="product-card-img">
+                  <img src="/images/<%= product.image %>" alt="<%= product.name %>" loading="lazy" />
+                  <span class="discount-badge">-<%= savings %>%</span>
+                </div>
+              </a>
+              <div class="product-card-body">
+                <div class="product-card-meta">
+                  <span class="market-tag">🏪 <%= product.marketName %></span>
+                  <span class="expiry-tag expiry-<%= urgency %>">
+                    <% if (daysLeft === 0) { %>Expires today
+                    <% } else if (daysLeft === 1) { %>1 day left
+                    <% } else { %><%= daysLeft %> days left
+                    <% } %>
+                  </span>
+                </div>
+                <a href="/product/<%= product.itemID %>" class="product-card-title"><%= product.name %></a>
+                <div class="product-card-pricing">
+                  <span class="price-discounted">₺<%= product.discountPrice %></span>
+                  <span class="price-original">₺<%= product.basePrice %></span>
+                </div>
+                <div class="product-card-footer">
+                  <span class="stock-info"><%= product.stock %> in stock</span>
+                  <% if (user && user.type === 'consumer') { %>
+                    <button
+                      class="btn-add-cart"
+                      data-item-id="<%= product.itemID %>"
+                      data-market-id="<%= product.marketID %>" 
+                    >+ Cart</button>
+                  <% } %>
+                </div> <!--data-item-id and data-market-id are used for adding items to the cart  -->
+              </div>
+            </div>
+          <% }) %>
+        </div>
+
+        <!-- PAGINATION -->
+        <% if (typeof currentPage !== 'undefined') { %>
+          <div class="pagination">
+            <% if (currentPage > 1) { %>
+              <a href="?keyword=<%= keyword %>&page=<%= currentPage - 1 %>" class="page-btn">← Prev</a>
+            <% } else { %>
+              <span class="page-btn disabled">← Prev</span>
+            <% } %>
+
+            <span class="page-info">Page <%= currentPage %></span>
+
+            <% if (products.length === 4) { /* if full page, there might be more */ %>
+              <a href="?keyword=<%= keyword %>&page=<%= currentPage + 1 %>" class="page-btn">Next →</a>
+            <% } else { %>
+              <span class="page-btn disabled">Next →</span>
+            <% } %>
+          </div>
+        <% } %>
+
+      <% } %>
+    </div>
+
+    <!-- RIGHT: CART SIDEBAR -->
+    <% if (user && user.type === 'consumer') { %>
+    <aside class="cart-sidebar">
+      <div class="cart-sidebar-inner">
+        <h2 class="cart-title">🛒 Your Cart</h2>
+        <div id="cart-items">
+          <div class="cart-loading">Loading cart…</div>
+        </div>
+        <div class="cart-total-row">
+          <span>Total</span>
+          <span id="cart-grand-total">₺0.00</span>
+        </div>
+        <button class="btn-primary cart-purchase-btn" onclick="completePurchase()" id="purchase-btn" disabled>
+          Complete Purchase
+        </button>
+      </div>
+    </aside>
+    <% } %>
+
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-inner">
+      <p class="footer-brand">UYGUN MARKETS</p>
+      <p class="footer-copy">© 2026 · Better Prices, Less Waste, Better Tomorrow 🌱</p>
+      <div class="footer-links">
+        <a href="/products">Browse</a>
+        <a href="/login">Log In</a>
+        <a href="/register">Sign Up</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- CART JS (only for consumers) -->
+  <% if (user && user.type === 'consumer') { %>
+  <script>
+    async function loadCart() {
+        try {
+            const res = await fetch('/cart/data');
+            if (!res.ok) throw new Error('Failed to load cart data');
+            const data = await res.json();
+            renderCart(data.items, data.grandTotal);
+        } catch (err) {
+            console.error(err);
+            const container = document.getElementById('cart-items');
+            container.innerHTML = '<p class="cart-error">Could not load cart. Please refresh the page.</p>';
+        }
+    }
+
+    function renderCart(items, grandTotal) {
+      const container = document.getElementById('cart-items');
+      const purchaseBtn = document.getElementById('purchase-btn');
+
+      if (!items || items.length === 0) {
+        container.innerHTML = '<p class="cart-empty">Your cart is empty.</p>';
+        document.getElementById('cart-grand-total').textContent = '₺0.00';
+        purchaseBtn.disabled = true;
+        return;
+      }
+
+      purchaseBtn.disabled = false;
+      container.innerHTML = items.map(item => `
+        <div class="cart-item" id="cart-item-${item.itemID}">
+            <img src="/images/${item.image}" alt="${item.name}" class="cart-item-img" />
+            <div class="cart-item-info">
+                <p class="cart-item-name">${item.name}</p>
+                <p class="cart-item-price">₺${item.discountPrice}</p>
+            </div>
+            <input
+                type="number"
+                value="${item.quantity}"
+                min="1"
+                class="cart-qty-input"
+                onchange="updateQuantity(${item.itemID}, this.value)" 
+            />
+            <button class="cart-remove-btn" onclick="removeFromCart(${item.itemID})">✕</button>
+        </div>
+        `).join('');
+        document.getElementById('cart-grand-total').textContent = '₺' + parseFloat(grandTotal).toFixed(2);
+    }
+
+    async function addToCart(itemID, marketID) {
+      const res = await fetch('/cart/add', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ itemID, marketID, quantity: 1 })
+      });
+      const data = await res.json();
+      if (data.success) loadCart();
+      else alert('Could not add to cart.');
+    }
+
+    document.addEventListener('click', (e) => {
+        if (e.target.classList.contains('btn-add-cart')) {
+            const itemID = e.target.dataset.itemId;
+            const marketID = e.target.dataset.marketId;
+            addToCart(itemID, marketID);
+        }
+    });
+
+    async function updateQuantity(itemID, quantity) {
+        const res = await fetch('/cart/update', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ itemID, quantity: parseInt(quantity) })
+        });
+        const data = await res.json();
+        if (data.success) loadCart();
+    }
+
+    async function removeFromCart(itemID) {
+      const res = await fetch('/cart/remove', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ itemID })
+      });
+      const data = await res.json();
+      if (data.success) loadCart();
+    }
+
+    async function completePurchase() {
+      if (!confirm('Complete your purchase?')) return;
+      const res = await fetch('/cart/purchase', { method: 'POST' });
+      const data = await res.json();
+      if (data.success) {
+        loadCart();
+        alert('Purchase completed!');
+      } else {
+        alert('Something went wrong. Please try again.');
+      }
+    }
+
+    loadCart();
+  </script>
+  <% } %>
+
+</body>
+</html>

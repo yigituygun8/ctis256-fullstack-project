@@ -3,15 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Login</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/style.css">
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <style>
+        .btn-primary {
+            cursor: pointer;
+        }
+        .type-toggle{
+            position: fixed;
+            top: 24px;
+            left: 400px;
+            z-index: 1000;
+            display: inline-flex;
+            gap: 8px;
+            margin: 8px 0 18px 0;
+        }
+        .type-toggle a{
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            color: var(--green-dark, #1a4a2e);
+            background: rgba(0,0,0,0.03);
+        }
+        .type-toggle a.active{
+            background: var(--green-pale, #e8f5ee);
+            font-weight: 700;
+        }
+    </style>
 </head>
 <body>
-    
+    <a class="btn-primary back-home" href="/">Back to Home Page</a>
+    <div class="type-toggle">
+        <a href="/login?type=consumer" class="<%= user_type === 'consumer' ? 'active' : '' %>">Consumer</a>
+        <a href="/login?type=market" class="<%= user_type === 'market' ? 'active' : '' %>">Market</a>
+    </div>
     <form action="/login" method="post">
+        <input type="hidden" name="user_type" value="<%= user_type %>">
         <div class="container auth-field">
             <h1>L O G I N</h1>
             <div class="input-field">

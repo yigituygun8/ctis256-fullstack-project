@@ -29,6 +29,8 @@ app.use('/', authRoutes);        // /login, /register, /verify-email, /logout
 app.use('/', productRoutes);     // /products, /product/:id, /dashboard, /dashboard/product/*
 app.use('/cart', cartRoutes);    // /cart, /cart/add, /cart/update, /cart/remove, /cart/purchase
 app.use('/', userRoutes);        // /profile, /profile/edit, /dashboard/profile, /dashboard/profile/edit
-
+app.use((req, res) => {
+  res.redirect('/'); // Redirect any unknown routes to home page
+});
 
 app.listen(3000, () => console.log("App is running on http://localhost:3000"))
