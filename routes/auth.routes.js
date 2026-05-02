@@ -6,7 +6,7 @@ const router = express.Router();
 // Login endpoints
 router.get('/login', (req, res) => {
   const user_type = req.query.type || 'consumer'; // Default to 'consumer' if no type is provided
-  res.render('login', { form : {}, errors: {}, user_type});
+  res.render('login', { form : {}, errors: {}, user_type, loginError: {}});
 });
 
 router.post('/login', 
@@ -18,7 +18,7 @@ router.post('/login',
 // Register endpoints
 router.get('/register', (req, res) => {
   const user_type = req.query.type ?? 'consumer'; // Default to 'consumer' if no type is provided
-  res.render('register', { form : {}, errors: {}, user_type});
+  res.render('register', { form : {}, errors: {}, user_type, error: {}});
 });
 
 router.post('/register', 
@@ -41,7 +41,7 @@ router.post('/verify-email',
   body("code").notEmpty().withMessage("*This field must be filled")
   .custom((value, {req}) => {
     if (value !== req.session.code) {
-      throw new Error("Wrong verification code");
+      throw new Error("*Wrong verification code");
     }
     return true;
   })
