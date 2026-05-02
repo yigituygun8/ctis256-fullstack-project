@@ -9,7 +9,7 @@
 
             <div class="input-field">
                 <input type="text" name="city" value="<%= form.city %>" placeholder=" ">
-                <span class="input-info">City</span>
+                <span class="input-info placeholder">City</span>
                 <% if(errors.city) { %>
                     <span class="input-error"><%= errors.city.msg %></span>
                 <% } %>
@@ -17,7 +17,7 @@
 
             <div class="input-field">
                 <input type="text" name="district" value="<%= form.district %>" placeholder=" ">
-                <span class="input-info">District</span>
+                <span class="input-info placeholder">District</span>
                 <% if(errors.district) { %>
                     <span class="input-error"><%= errors.district.msg %></span>
                 <% } %>

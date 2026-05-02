@@ -51,13 +51,19 @@
                 <% if(errors.email) { %>
                     <span class="input-error"><%= errors.email.msg %></span>
                 <% } %>
+                <% if(loginError && loginError.field === 'email') { %>
+                    <span class="input-error"><%= loginError.msg %></span>
+                <% } %>
             </div>
 
             <div class="input-field">
                 <input type="password" name="password" value="<%= form.password %>" placeholder=" ">
-                <span class="input-info">Password</span>
+                <span class="input-info placeholder">Password</span>
                 <% if(errors.password) { %>
                     <span class="input-error"><%= errors.password.msg %></span>
+                <% } %>
+                <% if(loginError && loginError.field === 'password') { %>
+                    <span class="input-error"><%= loginError.msg %></span>
                 <% } %>
             </div>
 
