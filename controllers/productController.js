@@ -8,7 +8,7 @@ export const getAllProducts = async (req, res) => {
                      JOIN Market m ON p.marketID = m.marketID 
                      WHERE p.expirationDate >= CURDATE()`;
         const [rows] = await pool.query(sql);
-        res.render('products', { products: rows });
+        res.render('products', { products: rows, user: req.session.user});
     } catch (error) {
         res.status(500).send("Error while getting all products." + error);
     }
@@ -26,7 +26,7 @@ export const getProductDetails = async (req, res) => {
         
         if (rows.length === 0) return res.status(404).send("Product not found");
         
-        res.render('product-details', { product: rows[0] });
+        res.render('product-details', { product: rows[0], user: req.session.user });
     } catch (error) {
         res.status(500).send("Error while getting details" + error);
     }
@@ -41,7 +41,7 @@ export const getMarketDashboard = async (req, res) => {
         const [rows] = await pool.query(sql, [marketID]);
         
         // Show only not expired products
-        res.render('market/dashboard', { products: rows });
+        res.render('market/dashboard', { products: rows, user: req.session.user });
     } catch (error) {
         res.status(500).send("Error while getting products" + error);
     }
@@ -99,10 +99,10 @@ export const deleteProduct = async (req, res) => {
 // Search Products
 export const searchProducts = async (req, res) => {
     try {
-        const { keyword, page = 1 } = req.query;
+        const { keyword = "", page = 1 } = req.query;
         const consumerID = req.session.userId; // Consumer ID
         
-        const pageSize = 3; // 4 products for each page
+        const pageSize = 4; // 4 products for each page
         const offset = (parseInt(page) - 1) * pageSize;
         const searchKeyword = `%${keyword}%`;
 
@@ -137,7 +137,7 @@ export const searchProducts = async (req, res) => {
         ]);
 
         // Send findings
-        res.render('search-results', { 
+        res.render('products', { 
             products: results, 
             currentPage: parseInt(page),
             keyword: keyword 

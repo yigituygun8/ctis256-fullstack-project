@@ -17,8 +17,8 @@ export const getCartData = async (req, res) => {
         let grandTotal = 0;
 
         for (const item of items) {
-        grandTotal += item.itemTotal;
-}
+            grandTotal += item.itemTotal;
+        }
 
         res.status(200).json({ items, grandTotal });
     } catch (error) {
@@ -43,6 +43,20 @@ export const addToCart = async (req, res) => {
         res.status(200).json({ success: true, message: "Product has added to the cart." });
     } catch (error) {
         res.status(500).json({ success: false, error: "Product could not be added to the cart." });
+    }
+};
+
+export const updateQuantity = async (req, res) => {
+    try {
+        const { itemID, quantity } = req.body;
+        const consumerID = req.session.userId;
+
+        const sql = "UPDATE shoppingcart SET quantity = ? WHERE itemID = ? AND consumerID = ?";
+        await pool.query(sql, [quantity, itemID, consumerID]);
+
+        res.status(200).json({ success: true, message: "Quantity updated." });
+    } catch (error) {
+        res.status(500).json({ success: false, error: "Could not update quantity." });
     }
 };
 
