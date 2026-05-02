@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title><%= product.name %> - Uygun Markets</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-inner">
+      <a href="/" class="nav-brand">UYGUN MARKETS</a>
+      <div class="nav-links">
+        <a href="/products">Browse Deals</a>
+        <% if (user) { %>
+          <% if (user.type === 'market') { %>
+            <a href="/dashboard">Dashboard</a>
+          <% } else { %>
+            <a href="/cart">Cart</a>
+          <% } %>
+          <form action="/logout" method="POST">
+            <button type="submit" class="nav-logout">Log out</button>
+          </form>
+        <% } else { %>
+          <a href="/login">Log in</a>
+          <a href="/register" class="btn-primary">Get Started</a>
+        <% } %>
+      </div>
+    </div>
+  </nav>
+
+  <%
+    const expDate = new Date(product.expirationDate);
+    const today = new Date();
+    today.setHours(0,0,0,0);
+    const daysLeft = Math.ceil((expDate - today) / (1000 * 60 * 60 * 24));
+    const urgency = daysLeft <= 2 ? 'urgent' : daysLeft <= 5 ? 'soon' : 'ok';
+    const savings = Math.round(((product.basePrice - product.discountPrice) / product.basePrice) * 100);
+  %>
+
+  <!-- PRODUCT DETAIL -->
+   <main class="page-main">
+       <div class="container">
+         <a href="/products" class="back-link">← Back to deals</a>
+     
+         <div class="detail-layout">
+     
+           <!-- IMAGE -->
+           <div class="detail-image-wrap">
+             <img src="/images/<%= product.image %>" alt="<%= product.name %>" class="detail-image" />
+             <span class="discount-badge detail-badge">-<%= savings %>%</span>
+           </div>
+     
+           <!-- INFO -->
+           <div class="detail-info">
+             <div class="detail-meta-top">
+               <span class="market-tag">🏪 <%= product.marketName %></span>
+               <span class="expiry-tag expiry-<%= urgency %>">
+                 <% if (daysLeft === 0) { %>Expires today!
+                 <% } else if (daysLeft === 1) { %>1 day left
+                 <% } else { %><%= daysLeft %> days left
+                 <% } %>
+               </span>
+             </div>
+     
+             <h1 class="detail-title"><%= product.name %></h1>
+     
+             <div class="detail-pricing">
+               <span class="price-discounted detail-price">₺<%= product.discountPrice %></span>
+               <span class="price-original">₺<%= product.basePrice %> original</span>
+               <span class="savings-pill">You save ₺<%= (product.basePrice - product.discountPrice).toFixed(2) %></span>
+             </div>
+     
+             <div class="detail-facts">
+               <div class="detail-fact">
+                 <span class="fact-label">Location</span>
+                 <span class="fact-value"><%= product.district %>, <%= product.city %></span>
+               </div>
+               <div class="detail-fact">
+                 <span class="fact-label">Stock</span>
+                 <span class="fact-value"><%= product.stock %> available</span>
+               </div>
+               <div class="detail-fact">
+                 <span class="fact-label">Expiry date</span>
+                 <span class="fact-value"><%= expDate.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) %></span>
+               </div>
+             </div>
+     
+             <% if (user && user.type === 'consumer') { %>
+               <div class="detail-add-row">
+                 <input type="number" id="qty-input" value="1" min="1" max="<%= product.stock %>" class="qty-input" />
+                 <button class="btn-primary" onclick="addToCart()">Add to Cart</button>
+               </div>
+               <p id="add-feedback" class="add-feedback"></p>
+             <% } else if (!user) { %>
+               <a href="/login" class="btn-secondary detail-add-row">Log in to add to cart</a>
+             <% } %>
+     
+           </div>
+         </div>
+       </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer>
+      <div class="footer-inner">
+        <p class="footer-brand">UYGUN MARKETS</p>
+        <p class="footer-copy">© 2026 · Better Prices, Less Waste, Better Tomorrow 🌱</p>
+        <div class="footer-links">
+          <a href="/products">Browse</a>
+          <a href="/login">Log In</a>
+          <a href="/register">Sign Up</a>
+        </div>
+      </div>
+    </footer>
+    
+  <% if (user && user.type === 'consumer') { %>
+  <script>
+    async function addToCart() {
+      const qty = parseInt(document.getElementById('qty-input').value) || 1;
+      const feedback = document.getElementById('add-feedback');
+
+      const res = await fetch('/cart/add', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          itemID: "<%= product.itemID %>",
+          marketID: "<%= product.marketID %>",
+          quantity: qty
+        })
+      });
+
+      const data = await res.json();
+      feedback.textContent = data.success ? 'Added to cart!' : 'Could not add to cart.';
+      feedback.className = 'add-feedback ' + (data.success ? 'feedback-ok' : 'feedback-err');
+      setTimeout(() => { feedback.textContent = ''; }, 3000);
+    }
+  </script>
+  <% } %>
+
+</body>
+</html>
