@@ -33,7 +33,10 @@ router.post('/register',
 
 // Email verification endpoints
 router.get('/verify-email', (req, res) => {
-  // GET /verify-email
+  // Check if there is a user to verify in the session, if not redirect to register
+  if(!req.session.code || !req.session.user_to_verify) {
+    return res.redirect("/register");
+  }
   res.render('verify', { form: {}, errors: {}})
 });
 
