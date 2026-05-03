@@ -17,7 +17,7 @@ async function sendVerificationCode(userEmail, code) {
 
   // 2. Define the email content
   let info = await transporter.sendMail({
-    from: '"Uygun Markets" <patlocen5@gmail.com>',
+    from: '"Uygun Markets" <' + process.env.EMAIL_USER + '>' , // sender address
     to: userEmail,
     subject: "Your Verification Code",
     text: `Your 6-digit code is: ${code}`,
