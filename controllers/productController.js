@@ -140,7 +140,8 @@ export const searchProducts = async (req, res) => {
         res.render('products', { 
             products: results, 
             currentPage: parseInt(page),
-            keyword: keyword 
+            keyword: keyword,
+            user: req.session.user
         });
 
     } catch (error) {

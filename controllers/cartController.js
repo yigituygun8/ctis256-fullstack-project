@@ -29,8 +29,8 @@ export const getCartData = async (req, res) => {
 // Add to cart
 export const addToCart = async (req, res) => {
     try {
-        const { itemID, marketID, quantity } = req.body;
-        const consumerID = req.session.userId;
+        const { itemID, marketID, user, quantity } = req.body;
+        const consumerID = user.consumerID;
 
         const sql = `
             INSERT INTO shoppingcart (itemID, marketID, consumerID, quantity) 
@@ -48,8 +48,8 @@ export const addToCart = async (req, res) => {
 
 export const updateQuantity = async (req, res) => {
     try {
-        const { itemID, quantity } = req.body;
-        const consumerID = req.session.userId;
+        const { itemID, quantity, user } = req.body;
+        const consumerID = user.consumerID;
 
         const sql = "UPDATE shoppingcart SET quantity = ? WHERE itemID = ? AND consumerID = ?";
         await pool.query(sql, [quantity, itemID, consumerID]);
@@ -63,8 +63,8 @@ export const updateQuantity = async (req, res) => {
 // Delete from the cart
 export const removeFromCart = async (req, res) => {
     try {
-        const { itemID } = req.body;
-        const consumerID = req.session.userId;
+        const { itemID, user } = req.body;
+        const consumerID = user.consumerID;
 
         const sql = "DELETE FROM shoppingcart WHERE itemID = ? AND consumerID = ?";
         await pool.query(sql, [itemID, consumerID]);
@@ -78,7 +78,8 @@ export const removeFromCart = async (req, res) => {
 // Complete purchase
 export const completePurchase = async (req, res) => {
     try {
-        const consumerID = req.session.userId;
+        const { user } = req.body;
+        const consumerID = user.consumerID;
 
         // Drop the quantity
         const updateStockSql = `
