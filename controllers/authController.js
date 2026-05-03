@@ -1,28 +1,30 @@
-import { body, validationResult } from "express-validator";
+import { validationResult } from "express-validator";
 import { pool } from "../config/dbpool.js";
 import bcrypt from "bcrypt";
 import nodemailer from "nodemailer"
 
-async function sendVerificationCode(userEmail, code) {
-  // 1. Create a transporter object
-  let transporter = nodemailer.createTransport({
-    host: "smtp.gmail.com",
-    port: 465,
-    secure: true,
-    auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS,
-    },
-  });
+function isBcryptHash(password) {
+        return typeof password === "string" && password.startsWith("$2");
+}
 
-  // 2. Define the email content
-  let info = await transporter.sendMail({
-    from: '"Uygun Markets" <' + process.env.EMAIL_USER + '>' , // sender address
-    to: userEmail,
-    subject: "Your Verification Code",
-    text: `Your 6-digit code is: ${code}`,
-    html: `<b>Your 6-digit code is: ${code}</b>`,
-  });
+async function sendVerificationCode(userEmail, code) {
+        const transporter = nodemailer.createTransport({
+                host: "smtp.gmail.com",
+                port: 465,
+                secure: true,
+                auth: {
+                        user: process.env.EMAIL_USER,
+                        pass: process.env.EMAIL_PASS,
+                },
+        });
+
+        return transporter.sendMail({
+                from: `"Uygun Markets" <${process.env.EMAIL_USER}>`,
+                to: userEmail,
+                subject: "Your Verification Code",
+                text: `Your 6-digit code is: ${code}`,
+                html: `<b>Your 6-digit code is: ${code}</b>`,
+        });
 }
 
 // Register
@@ -31,8 +33,7 @@ export const registerEmail = async (req, res) => {
     const user_type = req.body.user_type || req.query.type || 'consumer';
 
     if(!errors.isEmpty()){
-        //Sended errors with .mapped() for easier checking
-        res.render('register', { form: req.body, errors : errors.mapped(), user_type, error: {}});
+        return res.render('register', { form: req.body, errors : errors.mapped(), user_type, error: {}});
     } else {
 
         try {
@@ -43,17 +44,13 @@ export const registerEmail = async (req, res) => {
                 return res.render('register', { form : req.body, errors: {}, user_type, error});
             }
         } catch (error) {
-            res.status(500).send("Error while registering the user." + error);
+            return res.status(500).send("Error while registering the user." + error);
         }
 
-        //TO-DO: Verification
-        //extract the inputs from the form according to user type
         const { email, password, city, district, fullName, marketName } = req.body;
         const name = (user_type === "consumer") ? fullName : marketName;
 
-        //create the user to be verified
-        const hashed_password = await bcrypt.hash(password,10)
-        //These are the attributes of a user use these while inserting into the database (req.session.user_to_verify.city)
+        const hashed_password = await bcrypt.hash(password, 10);
         const user_to_verify = {
             email,
             password: hashed_password,
@@ -63,46 +60,50 @@ export const registerEmail = async (req, res) => {
             user_type
         };
 
-        //console.log(user_to_verify);
         req.session.user_to_verify = user_to_verify;
 
-        //Verifiocation part
         const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
-        const userEmail = req.body.email;
-        // console.log(verificationCode);
-        // console.log(userEmail);
         req.session.code = verificationCode;
-        sendVerificationCode(userEmail, verificationCode);
-
+        try {
+            await sendVerificationCode(email, verificationCode);
+        } catch (error) {
+            delete req.session.user_to_verify;
+            delete req.session.code;
+            return res.status(500).send("Error while sending verification email. " + error.message);
+        }
 
         res.redirect("/verify-email");
     }
 };
 
-// Verify Email
+// Verify Email after registration and then create the user in the database
 export const verifyEmail = async (req, res) => {
     const errors = validationResult(req)
 
     if(!errors.isEmpty()){
-        res.render("verify", { form : req.body, errors: errors.mapped() })
+        return res.render("verify", { form : req.body, errors: errors.mapped() })
     }
-    else{
-    
-        //Queries for adding the user to the db using the user_to_verify from session. Fields are -> email, password, city, district, name, user_type
-        try {
-            const table = req.session.user_to_verify.user_type === "consumer" ? "Consumer" : "Market";
-            const insertUser = req.session.user_to_verify;
+    if (!req.session.user_to_verify) {
+        return res.redirect("/register");
+    }
 
-            const [result] = await pool.query(`insert into ${table} (email, customerName, password, city, district) values ( ?, ?, ?, ?, ? )`,
-                [insertUser.email, insertUser.name, insertUser.password, insertUser.city, insertUser.district]
-            )
+    try {
+        const insertUser = req.session.user_to_verify;
+        const isConsumer = insertUser.user_type === "consumer";
+        const table = isConsumer ? "Consumer" : "Market";
+        const nameColumn = isConsumer ? "customerName" : "marketName";
 
-            delete req.session.user_to_verify;
-            res.redirect("/login")
+        await pool.query(
+            `insert into ${table} (email, ${nameColumn}, password, city, district) values ( ?, ?, ?, ?, ? )`,
+            [insertUser.email, insertUser.name, insertUser.password, insertUser.city, insertUser.district]
+        );
 
-        } catch (error) {
-            res.status(500).send("Error while adding the user." + error);
-        }
+        delete req.session.user_to_verify;
+        delete req.session.code;
+        res.redirect("/login");
+
+    } catch (error) {
+        res.status(500).send("Error while adding the user." + error);
     }
 
 };
@@ -114,14 +115,10 @@ export const loginUser = async (req, res) => {
       const errors = validationResult(req);
     
       if(!errors.isEmpty()){
-        //Sended errors with .mapped() for easier checking
-        res.render('login', { form: req.body, errors : errors.mapped(), user_type, loginError: {}});
+        return res.render('login', { form: req.body, errors : errors.mapped(), user_type, loginError: {}});
       } else{
-        //TO-DO: Email and Password check with db
         const email = req.body.email;
-        const password = req.body.password
-        // console.log(email);
-        // console.log(hashed_password);
+        const password = req.body.password;
 
         const table = user_type === "consumer" ? "Consumer" : "Market";
 
@@ -134,18 +131,25 @@ export const loginUser = async (req, res) => {
                 return res.render('login', { form: req.body, errors : errors.mapped(), user_type, loginError});
             }
             
-            if(!(await bcrypt.compare(password, user.password))){
+            const passwordMatches = isBcryptHash(user.password)
+                ? await bcrypt.compare(password, user.password)
+                : password === user.password;
+
+            if(!passwordMatches){
                 const loginError = { field: "password", msg: "*Wrong password" }
                 return res.render('login', { form: req.body, errors : errors.mapped(), user_type, loginError});
             }
 
-            req.session.activeUser = user
-            req.session.user_type = user_type
+            const sessionUser = { ...user, type: user_type };
+            req.session.activeUser = sessionUser;
+            req.session.user = sessionUser;
+            req.session.user_type = user_type;
+            req.session.userId = sessionUser.consumerID || sessionUser.marketID;
     
-            res.redirect("/")
+            return res.redirect("/");
 
         } catch (error) {
-            res.status(500).send("Error while getting the user." + error);
+            return res.status(500).send("Error while getting the user." + error);
         }
         
 
