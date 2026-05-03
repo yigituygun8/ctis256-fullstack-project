@@ -28,12 +28,14 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `Consumer` (
-  `consumerID` int NOT NULL,
+  `consumerID` int NOT NULL AUTO_INCREMENT,
   `email` varchar(30) NOT NULL,
   `customerName` varchar(30) NOT NULL,
   `password` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `city` varchar(30) NOT NULL,
-  `district` varchar(30) NOT NULL
+  `district` varchar(30) NOT NULL,
+  PRIMARY KEY (`consumerID`),
+  UNIQUE KEY `email` (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
@@ -43,12 +45,14 @@ CREATE TABLE `Consumer` (
 --
 
 CREATE TABLE `Market` (
-  `marketID` int NOT NULL,
+  `marketID` int NOT NULL AUTO_INCREMENT,
   `marketName` varchar(30) NOT NULL,
   `email` varchar(50) NOT NULL,
   `password` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `city` varchar(30) NOT NULL,
-  `district` varchar(30) NOT NULL
+  `district` varchar(30) NOT NULL,
+  PRIMARY KEY (`marketID`),
+  UNIQUE KEY `email` (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
@@ -140,25 +144,6 @@ INSERT INTO `product` (`marketID`, `itemID`, `name`, `expirationDate`, `image`, 
 (689, 5020, 'Toblerone Bar', '2026-05-29', 'toblerone.jpg', 75.00, 59.90, 11);
 
 -- --------------------------------------------------------
-
---
--- Indexes for dumped tables
---
-
---
--- Indexes for table `Consumer`
---
-ALTER TABLE `Consumer`
-  ADD PRIMARY KEY (`consumerID`),
-  ADD UNIQUE KEY `email` (`email`);
-
---
--- Indexes for table `Market`
---
-ALTER TABLE `Market`
-  ADD PRIMARY KEY (`marketID`),
-  ADD UNIQUE KEY `email` (`email`);
-
 --
 -- Indexes for table `ShoppingCart`
 --
