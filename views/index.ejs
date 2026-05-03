@@ -20,9 +20,9 @@
         <a href="/products">Browse Deals</a>
         <% if (user) { %>
           <% if (user.type === 'market') { %>
-            <a href="/dashboard">Dashboard</a>
+            <a class="btn-primary" href="/dashboard">Dashboard</a>
           <% } else { %>
-            <a href="/cart">Cart</a>
+            <a class="btn-primary" href="/cart">Cart</a>
           <% } %>
           <form action="/logout" method="POST">
             <button type="submit" class="nav-logout">Log out</button>

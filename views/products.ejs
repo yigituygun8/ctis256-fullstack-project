@@ -20,9 +20,9 @@
         <a href="/products">Browse Deals</a>
         <% if (user) { %>
           <% if (user.type === 'market') { %>
-            <a href="/dashboard">Dashboard</a>
+            <a class="btn-primary" href="/dashboard">Dashboard</a>
           <% } else { %>
-            <a href="/cart">Cart</a>
+            <a class="btn-primary" href="/cart">Cart</a>
           <% } %>
           <form action="/logout" method="POST">
             <button type="submit" class="nav-logout">Log out</button>
@@ -50,7 +50,10 @@
             autocomplete="off"
             />
             <button type="submit" class="btn-primary">Search</button>
-        </form>
+          </form>
+          <form action="/products" method="GET">
+            <button type="submit" class="btn-secondary" style="margin-top: 20px; cursor: pointer;">Show All Products</button>
+          </form>
         </div>
     </div>
     <% } else { %>
@@ -229,7 +232,7 @@
       const res = await fetch('/cart/add', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ itemID, marketID, quantity: 1 })
+        body: JSON.stringify({ itemID, marketID, user: { consumerID: user.consumerID }, quantity: 1 })
       });
       const data = await res.json();
       if (data.success) loadCart();
@@ -248,7 +251,7 @@
         const res = await fetch('/cart/update', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ itemID, quantity: parseInt(quantity) })
+            body: JSON.stringify({ itemID, quantity: parseInt(quantity), user: { consumerID: user.consumerID } })
         });
         const data = await res.json();
         if (data.success) loadCart();
@@ -258,7 +261,7 @@
       const res = await fetch('/cart/remove', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ itemID })
+        body: JSON.stringify({ itemID, user: { consumerID: user.consumerID } })
       });
       const data = await res.json();
       if (data.success) loadCart();
@@ -266,7 +269,7 @@
 
     async function completePurchase() {
       if (!confirm('Complete your purchase?')) return;
-      const res = await fetch('/cart/purchase', { method: 'POST' });
+      const res = await fetch('/cart/purchase', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ user: { consumerID: user.consumerID } }) });
       const data = await res.json();
       if (data.success) {
         loadCart();
