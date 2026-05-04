@@ -141,7 +141,6 @@ export const loginUser = async (req, res) => {
             }
 
             const sessionUser = { ...user, type: user_type };
-            req.session.activeUser = sessionUser;
             req.session.user = sessionUser;
             req.session.user_type = user_type;
             req.session.userId = sessionUser.consumerID || sessionUser.marketID;
