@@ -1,30 +1,10 @@
 import { validationResult } from "express-validator";
 import { pool } from "../config/dbpool.js";
 import bcrypt from "bcrypt";
-import nodemailer from "nodemailer"
+import { sendVerificationCode } from "../utils/emailSender.js";
 
 function isBcryptHash(password) {
         return typeof password === "string" && password.startsWith("$2");
-}
-
-async function sendVerificationCode(userEmail, code) {
-        const transporter = nodemailer.createTransport({
-                host: "smtp.gmail.com",
-                port: 465,
-                secure: true,
-                auth: {
-                        user: process.env.EMAIL_USER,
-                        pass: process.env.EMAIL_PASS,
-                },
-        });
-
-        return transporter.sendMail({
-                from: `"Uygun Markets" <${process.env.EMAIL_USER}>`,
-                to: userEmail,
-                subject: "Your Verification Code",
-                text: `Your 6-digit code is: ${code}`,
-                html: `<b>Your 6-digit code is: ${code}</b>`,
-        });
 }
 
 // Register
@@ -33,15 +13,15 @@ export const registerEmail = async (req, res) => {
     const user_type = req.body.user_type || req.query.type || 'consumer';
 
     if(!errors.isEmpty()){
-        return res.render('register', { form: req.body, errors : errors.mapped(), user_type, error: {}});
+        return res.render('register', { form: req.body, errors : errors.mapped(), user_type, exists: {}});
     } else {
 
         try {
             const table = user_type === "consumer" ? "Consumer" : "Market";
             const [rows] = await pool.query(`select * from ${table} where email = ?`, [req.body.email]);
             if(rows.length !== 0){
-                const error = { field: "email", msg: "*This email already exists"};
-                return res.render('register', { form : req.body, errors: {}, user_type, error});
+                const exists = { field: "email", msg: "*This email already exists"};
+                return res.render('register', { form : req.body, errors: {}, user_type, exists});
             }
         } catch (error) {
             return res.status(500).send("Error while registering the user." + error);
@@ -100,6 +80,7 @@ export const verifyEmail = async (req, res) => {
 
         delete req.session.user_to_verify;
         delete req.session.code;
+        req.session.status =  { isSuccess: true, msg: "Account created successfuly, Please login" }
         res.redirect("/login");
 
     } catch (error) {
@@ -115,7 +96,7 @@ export const loginUser = async (req, res) => {
       const errors = validationResult(req);
     
       if(!errors.isEmpty()){
-        return res.render('login', { form: req.body, errors : errors.mapped(), user_type, loginError: {}});
+        return res.render('login', { form: req.body, errors : errors.mapped(), user_type, loginError: {}, status: null});
       } else{
         const email = req.body.email;
         const password = req.body.password;
@@ -128,7 +109,7 @@ export const loginUser = async (req, res) => {
 
             if(!user){
                 const loginError = { field: "email", msg: "*No user with this email" }
-                return res.render('login', { form: req.body, errors : errors.mapped(), user_type, loginError});
+                return res.render('login', { form: req.body, errors : errors.mapped(), user_type, loginError, status: null});
             }
             
             const passwordMatches = isBcryptHash(user.password)
@@ -137,14 +118,15 @@ export const loginUser = async (req, res) => {
 
             if(!passwordMatches){
                 const loginError = { field: "password", msg: "*Wrong password" }
-                return res.render('login', { form: req.body, errors : errors.mapped(), user_type, loginError});
+                return res.render('login', { form: req.body, errors : errors.mapped(), user_type, loginError, status: null});
             }
 
             const sessionUser = { ...user, type: user_type };
             req.session.user = sessionUser;
             req.session.user_type = user_type;
             req.session.userId = sessionUser.consumerID || sessionUser.marketID;
-    
+            
+            req.session.status = { isSuccess:true, msg: "Logged in successfuly!" }
             return res.redirect("/");
 
         } catch (error) {
