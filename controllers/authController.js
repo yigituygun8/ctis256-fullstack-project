@@ -2,10 +2,7 @@ import { validationResult } from "express-validator";
 import { pool } from "../config/dbpool.js";
 import bcrypt from "bcrypt";
 import { sendVerificationCode } from "../utils/emailSender.js";
-
-function isBcryptHash(password) {
-        return typeof password === "string" && password.startsWith("$2");
-}
+import { isBcryptHash } from "../utils/password.js";
 
 // Register
 export const registerEmail = async (req, res) => {

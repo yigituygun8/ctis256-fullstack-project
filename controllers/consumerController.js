@@ -1,10 +1,7 @@
 import { pool } from "../config/dbpool.js";
 import bcrypt from "bcrypt";
 import { validationResult } from "express-validator";
-
-function isBcryptHash(password) {
-        return typeof password === "string" && password.startsWith("$2");
-}
+import { isBcryptHash } from "../utils/password.js";
 
 // Update consumer profile
 export const updateConsumerProfile = async (req, res) => {

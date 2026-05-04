@@ -1,10 +1,7 @@
 import { pool } from "../config/dbpool.js";
 import bcrypt from "bcrypt";
 import { validationResult } from "express-validator";
-
-function isBcryptHash(password) {
-        return typeof password === "string" && password.startsWith("$2");
-}
+import { isBcryptHash } from "../utils/password.js";
 
 // Update market profile
 export const updateMarketProfile = async (req, res) => {
