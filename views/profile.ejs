@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title><%= user_type === 'market' ? 'Market Profile' : 'Customer Profile' %></title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-inner">
+      <a href="/" class="nav-brand">UYGUN MARKETS</a>
+      <div class="nav-links">
+        <a href="/products">Browse Deals</a>
+        <% if (user_type === 'market') { %>
+          <a href="/dashboard" class="btn-primary">Dashboard</a>
+        <% } else { %>
+          <a href="/cart" class="btn-primary">Cart</a>
+        <% } %>
+        <form action="/logout" method="POST">
+          <button type="submit" class="nav-logout">Log out</button>
+        </form>
+      </div>
+    </div>
+  </nav>
+
+  <main class="page-main">
+    <div class="container">
+
+      <!-- FLASH STATUS -->
+      <% if (status) { %>
+        <div class="profile-flash <%= status.isSuccess ? 'flash-ok' : 'flash-err' %>">
+          <%= status.isSuccess ? '✓' : '✗' %> <%= status.msg %>
+        </div>
+      <% } %>
+
+      <div class="profile-layout">
+
+        <!-- LEFT: IDENTITY CARD -->
+        <div class="profile-card">
+          <div class="profile-avatar">
+            <%= user_type === 'market' ? '🏪' : '👤' %>
+          </div>
+          <p class="profile-type-label <%= user_type === 'market' ? 'label-market' : 'label-consumer' %>">
+            <%= user_type === 'market' ? 'Market Account' : 'Consumer Account' %>
+          </p>
+          <h2 class="profile-name">
+            <%= user_type === 'market' ? user.marketName : user.customerName %>
+          </h2>
+          <p class="profile-email"><%= user.email %></p>
+          <div class="profile-location">
+            <span class="profile-location-icon">📍</span>
+            <span><%= user.district %>, <%= user.city %></span>
+          </div>
+        </div>
+
+        <!-- RIGHT: EDIT FORM -->
+        <div class="profile-form-wrap">
+          <h3 class="profile-form-title">Edit Profile</h3>
+
+          <form action="<%= user_type === 'market' ? '/dashboard/profile/edit' : '/profile/edit' %>" method="POST" class="profile-form" novalidate>
+
+            <!-- Name field: label differs by type -->
+            <div class="form-group">
+              <label for="name">
+                <%= user_type === 'market' ? 'Market Name' : 'Full Name' %>
+              </label>
+              <input
+                type="text"
+                id="name"
+                name="<%= user_type === 'market' ? 'marketName' : 'fullName' %>"
+                value="<%= user_type === 'market' ? user.marketName : user.customerName %>"
+                class="<%= errors && (errors.marketName || errors.fullName) ? 'input-invalid' : '' %>"
+              />
+              <% if (errors && errors.fullName) { %><span class="field-error"><%= errors.fullName.msg %></span><% } %>
+              <% if (errors && errors.marketName) { %><span class="field-error"><%= errors.marketName.msg %></span><% } %>
+            </div>
+
+            <div class="form-group">
+              <label for="email">Email</label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                value="<%= user.email %>"
+                class="<%= errors && errors.email ? 'input-invalid' : '' %>"
+              />
+              <% if (errors && errors.email) { %><span class="field-error"><%= errors.email.msg %></span><% } %>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="city">City</label>
+                <input
+                  type="text"
+                  id="city"
+                  name="city"
+                  value="<%= user.city %>"
+                  class="<%= errors && errors.city ? 'input-invalid' : '' %>"
+                />
+                <% if (errors && errors.city) { %><span class="field-error"><%= errors.city.msg %></span><% } %>
+              </div>
+              <div class="form-group">
+                <label for="district">District</label>
+                <input
+                  type="text"
+                  id="district"
+                  name="district"
+                  value="<%= user.district %>"
+                  class="<%= errors && errors.district ? 'input-invalid' : '' %>"
+                />
+                <% if (errors && errors.district) { %><span class="field-error"><%= errors.district.msg %></span><% } %>
+              </div>
+            </div>
+
+            <div class="form-divider">
+              <span>Change Password</span>
+            </div>
+
+            <div class="form-group">
+              <label for="currentPassword">Current Password <span class="label-required">*required</span></label>
+              <input
+                type="password"
+                id="currentPassword"
+                name="currentPassword"
+                placeholder="Enter current password to save any changes"
+                class="<%= errors && errors.currentPassword ? 'input-invalid' : '' %>"
+              />
+              <% if (errors && errors.currentPassword) { %><span class="field-error"><%= errors.currentPassword.msg %></span><% } %>
+            </div>
+
+            <div class="form-group">
+              <label for="newPassword">New Password <span class="label-optional">optional</span></label>
+              <input
+                type="password"
+                id="newPassword"
+                name="newPassword"
+                placeholder="Leave blank to keep current password"
+                class="<%= errors && errors.newPassword ? 'input-invalid' : '' %>"
+              />
+              <% if (errors && errors.newPassword) { %><span class="field-error"><%= errors.newPassword.msg %></span><% } %>
+            </div>
+
+            <button type="submit" class="btn-primary profile-submit">Save Changes</button>
+
+          </form>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <%- include('partials/_footer') %>
+
+</body>
+</html>

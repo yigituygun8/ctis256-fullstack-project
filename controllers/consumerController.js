@@ -2,11 +2,16 @@ import { pool } from "../config/dbpool.js";
 import bcrypt from "bcrypt";
 import { validationResult } from "express-validator";
 
+function isBcryptHash(password) {
+        return typeof password === "string" && password.startsWith("$2");
+}
+
 // Update consumer profile
 export const updateConsumerProfile = async (req, res) => {
     const errors = validationResult(req);
     const user_type = 'consumer';
     const currentUser = req.session.user;
+    const profilePath = '/profile';
 
     if (!errors.isEmpty()) {
         return res.render('profile', {
@@ -26,10 +31,12 @@ export const updateConsumerProfile = async (req, res) => {
         const consumerID = currentUser.consumerID;
 
         // Password check
-        const isMatch = await bcrypt.compare(currentPassword, currentUser.password);
+        const isMatch = isBcryptHash(currentUser.password)
+                    ? await bcrypt.compare(currentPassword, currentUser.password)
+                    : currentPassword === currentUser.password;
         if (!isMatch) {
             req.session.status = { isSuccess: false, msg: "Password is incorrect" };
-            return res.redirect('/profile');
+            return res.redirect(profilePath);
         }
 
         // Has a new password been entered? If empty the old password will remain
@@ -43,7 +50,7 @@ export const updateConsumerProfile = async (req, res) => {
             const [rows] = await pool.query(`SELECT * FROM Consumer WHERE email = ? AND consumerID != ?`, [email, consumerID]);
             if (rows.length !== 0) {
                 req.session.status = { isSuccess: false, msg: "This email address is already in use." };
-                return res.redirect('/profile');
+                return res.redirect(profilePath);
             }
         }
 
@@ -60,7 +67,7 @@ export const updateConsumerProfile = async (req, res) => {
         req.session.userId = consumerID;
         req.session.status = { isSuccess: true, msg: "Customer profile has updated successfully!" };
 
-        res.redirect("/profile");
+        res.redirect(profilePath);
 
     } catch (error) {
         console.error(error);
@@ -81,10 +88,15 @@ export const getConsumerProfile = async (req, res) => {
             "SELECT email, customerName, city, district FROM Consumer WHERE consumerID = ?", 
             [consumerID]
         );
+        
+        if(currentUser.type === 'market') {
+            return res.redirect('/dashboard/profile'); // If a market somehow tries to access consumer profile, redirect to market profile
+        }
 
         if (rows.length === 0) {
             return res.status(404).send("User could not found.");
         }
+
 
         const user = rows[0];
 
@@ -96,7 +108,8 @@ export const getConsumerProfile = async (req, res) => {
         res.render('profile', { 
             user,             
             status,         
-            user_type: 'consumer'
+            user_type: 'consumer',
+            errors: {}
         });
 
     } catch (error) {

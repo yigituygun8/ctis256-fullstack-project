@@ -1,9 +1,9 @@
 import express from "express";
 const router = express.Router();
 import { pool } from "../config/dbpool.js";
-import { getAllProducts, getProductDetails, searchProducts } from "../controllers/productController.js";
+import { getAllProducts, getProductDetails, searchProducts, getMarketDashboard } from "../controllers/productController.js";
 
-// Get all products
+// Get all products from any market (public)
 router.get('/products', getAllProducts);
 
 // Get specific product with id
@@ -12,10 +12,8 @@ router.get('/product/:id', getProductDetails);
 // Search products with keyword and pagination
 router.get('/search', searchProducts);
 
-// Market dashboard - get dashboard
-router.get('/dashboard', (req, res) => {
-  // GET /dashboard - market overview and products list
-});
+// Market dashboard - get dashboard of a specific market
+router.get('/dashboard', getMarketDashboard);
 
 // Market dashboard - form to add new product
 router.get('/dashboard/product/:id/new', (req, res) => {

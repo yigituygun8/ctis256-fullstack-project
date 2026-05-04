@@ -21,8 +21,10 @@
         <% if (user) { %>
           <% if (user.type === 'market') { %>
             <a class="btn-primary" href="/dashboard">Dashboard</a>
+            <a href="/dashboard/profile" class="btn-primary">Market Profile</a>
           <% } else { %>
             <a class="btn-primary" href="/cart">Cart</a>
+            <a href="/profile" class="btn-primary">Profile</a>
           <% } %>
           <form action="/logout" method="POST">
             <button type="submit" class="nav-logout">Log out</button>
@@ -170,18 +172,7 @@
     </div>
   </section>
 
-  <!-- FOOTER -->
-  <footer>
-    <div class="footer-inner">
-      <p class="footer-brand">UYGUN MARKETS</p>
-      <p class="footer-copy">© 2026 · Better Prices, Less Waste, Better Tomorrow 🌱</p>
-      <div class="footer-links">
-        <a href="/products">Browse</a>
-        <a href="/login">Log In</a>
-        <a href="/register">Sign Up</a>
-      </div>
-    </div>
-  </footer>
+  <%- include('partials/_footer') %>
 
 </body>
 </html>

@@ -2,11 +2,16 @@ import { pool } from "../config/dbpool.js";
 import bcrypt from "bcrypt";
 import { validationResult } from "express-validator";
 
+function isBcryptHash(password) {
+        return typeof password === "string" && password.startsWith("$2");
+}
+
 // Update market profile
 export const updateMarketProfile = async (req, res) => {
     const errors = validationResult(req);
     const user_type = 'market';
     const currentUser = req.session.user;
+    const profilePath = '/dashboard/profile';
 
     // Validation check
     if (!errors.isEmpty()) {
@@ -27,14 +32,17 @@ export const updateMarketProfile = async (req, res) => {
         const marketID = currentUser.marketID;
 
         // Password check
-        const isMatch = await bcrypt.compare(currentPassword, currentUser.password);
+        const isMatch = isBcryptHash(currentUser.password)
+                    ? await bcrypt.compare(currentPassword, currentUser.password)
+                    : currentPassword === currentUser.password;
+
         
         if (!isMatch) {
             req.session.status = { 
                 isSuccess: false, 
                 msg: "Password is incorrect." 
             };
-            return res.redirect('/profile');
+            return res.redirect(profilePath);
         }
 
         // Password
@@ -54,7 +62,7 @@ export const updateMarketProfile = async (req, res) => {
                     isSuccess: false, 
                     msg: "Email already exists." 
                 };
-                return res.redirect('/profile');
+                return res.redirect(profilePath);
             }
         }
 
@@ -77,7 +85,7 @@ export const updateMarketProfile = async (req, res) => {
             msg: "Market profile has updated successfully!" 
         };
 
-        res.redirect("/profile");
+        res.redirect(profilePath);
 
     } catch (error) {
         console.error("Market Update Error:", error);
@@ -100,6 +108,10 @@ export const getMarketProfile = async (req, res) => {
             [marketID]
         );
 
+        if(currentUser.type === 'consumer') {
+            return res.redirect('/profile'); // If a consumer somehow tries to access market profile, redirect to consumer profile
+        }
+
         if (rows.length === 0) {
             return res.status(404).send("Market could not found.");
         }
@@ -114,7 +126,8 @@ export const getMarketProfile = async (req, res) => {
         res.render('profile', { 
             user,              
             status,     
-            user_type: 'market' 
+            user_type: 'market',
+            errors: {}
         });
 
     } catch (error) {
