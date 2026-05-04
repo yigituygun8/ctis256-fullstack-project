@@ -6,7 +6,9 @@ const router = express.Router();
 // Login endpoints
 router.get('/login', (req, res) => {
   const user_type = req.query.type || 'consumer'; // Default to 'consumer' if no type is provided
-  res.render('login', { form : {}, errors: {}, user_type, loginError: {}});
+  const status = req.session.status;
+  delete req.session.status;
+  res.render('login', { form : {}, errors: {}, user_type, loginError: {}, status});
 });
 
 router.post('/login', 
@@ -18,7 +20,7 @@ router.post('/login',
 // Register endpoints
 router.get('/register', (req, res) => {
   const user_type = req.query.type ?? 'consumer'; // Default to 'consumer' if no type is provided
-  res.render('register', { form : {}, errors: {}, user_type, error: {}});
+  res.render('register', { form : {}, errors: {}, user_type, exists: {}});
 });
 
 router.post('/register', 
