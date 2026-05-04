@@ -137,7 +137,28 @@ INSERT INTO `product` (`marketID`, `itemID`, `name`, `expirationDate`, `image`, 
 (205, 5017, 'Cake Slice', '2026-05-22', 'cake.jpg', 28.00, 21.90, 14),
 (317, 5018, 'Egg Carton', '2026-05-25', 'egg.jpg', 32.00, 24.90, 22),
 (578, 5019, 'Nutmeg Spice', '2026-06-01', 'nutmegspice.jpg', 18.00, 13.50, 40),
-(689, 5020, 'Toblerone Bar', '2026-05-29', 'toblerone.jpg', 75.00, 59.90, 11);
+(689, 5020, 'Toblerone Bar', '2026-05-29', 'toblerone.jpg', 75.00, 59.90, 11),
+
+(101, 5021, 'Strawberry Milk', '2026-05-14', 'strawberrymilk.jpg', 50, 37.5, 15),
+(101, 5022, 'Cream Cheese', '2026-05-10', 'creamcheese.jpg', 65, 48.9, 10),
+
+(205, 5023, 'Chocolate Mini Cake', '2026-05-23', 'chocominicake.jpg', 32, 24.5, 12),
+(205, 5024, 'Green Apple Pack', '2026-05-17', 'greenapple.jpg', 27, 20.5, 28),
+
+(442, 5027, 'Mozzarella Cheese', '2026-05-09', 'mozzarella.jpg', 110, 82.5, 14),
+(442, 5028, 'Chocolate Ice Cream', '2026-05-01', 'chocoicecream.jpg', 36, 28.0, 9),
+
+(578, 5029, 'Cinnamon Spice', '2026-06-03', 'cinnamon.jpg', 20, 15.0, 35),
+(578, 5030, 'Fruit Yogurt Mix', '2026-05-21', 'fruityogurt.jpg', 42, 31.5, 19),
+
+(689, 5031, 'Apple Juice', '2026-05-22', 'applejuice.jpg', 58, 43.5, 17),
+(689, 5032, 'Dark Chocolate Bar', '2026-05-30', 'darkchocolate.jpg', 80, 62.0, 13),
+
+(101, 5033, 'Whole Wheat Bread', '2026-05-11', 'wheatbread.jpg', 22, 16.5, 20),
+(317, 5035, 'Sausage Pack', '2026-05-13', 'sausage.jpg', 70, 52.5, 14),
+
+(442, 5036, 'Parmesan Cheese', '2026-05-08', 'parmesan.jpg', 130, 97.5, 11),
+(689, 5037, 'Peach Juice', '2026-05-24', 'peachjuice.jpg', 55, 41.0, 18);
 
 -- --------------------------------------------------------
 
