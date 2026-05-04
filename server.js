@@ -9,14 +9,16 @@ import cartRoutes from "./routes/cart.routes.js";
 import userRoutes from "./routes/user.routes.js"
 
 const app = express()
-app.set('view engine', 'ejs')
-app.use(express.static('public'))
-app.use(express.urlencoded({extended: true}))
+app.set('view engine', 'ejs') // Set EJS as the templating engine
+app.use(express.static('public')) // For serving static files like CSS, JS, images from the "public" directory
+app.use(express.urlencoded({extended: true})) // For parsing application/x-www-form-urlencoded (form data)
+app.use(express.json()) // For parsing application/json
 app.use(session({
-    secret: process.env.SESSION_SECRET || "default_secret",
+    secret: process.env.SESSION_SECRET,
     resave: false, // Don't save session if unmodified
     saveUninitialized: false, // Don't create session until something stored / modified
-}))
+})); // Session configuration
+
 // Home endpoint
 app.get('/', (req, res) => {
   const status = req.session.status;
