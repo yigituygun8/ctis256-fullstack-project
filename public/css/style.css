@@ -780,7 +780,7 @@ a.page-btn:hover { background: var(--green-pale); }
   padding-top: 4px;
 }
 #cart-grand-total { color: var(--green-dark); }
-.cart-purchase-btn { width: 100%; text-align: center; }
+.cart-purchase-btn { width: 100%; text-align: center; cursor: pointer; }
 .cart-purchase-btn:disabled {
   opacity: 0.4;
   cursor: not-allowed;

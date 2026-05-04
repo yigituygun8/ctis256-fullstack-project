@@ -221,7 +221,7 @@
       const res = await fetch('/cart/add', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ itemID, marketID, user: { consumerID: user.consumerID }, quantity: 1 })
+        body: JSON.stringify({ itemID, marketID, quantity: 1 })
       });
       const data = await res.json();
       if (data.success) loadCart();
@@ -240,7 +240,7 @@
         const res = await fetch('/cart/update', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ itemID, quantity: parseInt(quantity), user: { consumerID: user.consumerID } })
+        body: JSON.stringify({ itemID, quantity: parseInt(quantity) })
         });
         const data = await res.json();
         if (data.success) loadCart();
@@ -250,7 +250,7 @@
       const res = await fetch('/cart/remove', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ itemID, user: { consumerID: user.consumerID } })
+        body: JSON.stringify({ itemID })
       });
       const data = await res.json();
       if (data.success) loadCart();
@@ -258,7 +258,7 @@
 
     async function completePurchase() {
       if (!confirm('Complete your purchase?')) return;
-      const res = await fetch('/cart/purchase', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ user: { consumerID: user.consumerID } }) });
+      const res = await fetch('/cart/purchase', { method: 'POST', headers: { 'Content-Type': 'application/json' } });
       const data = await res.json();
       if (data.success) {
         loadCart();

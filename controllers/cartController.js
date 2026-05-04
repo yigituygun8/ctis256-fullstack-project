@@ -3,11 +3,15 @@ import { pool } from "../config/dbpool.js";
 // Get cart data
 export const getCartData = async (req, res) => {
     try {
-        const consumerID = req.session.userId;
+        const consumerID = req.session.user.consumerID || null; 
+
+        if (!consumerID) {
+            return res.status(401).json({ error: "Please log in to view the cart." });
+        }
 
         const sql = `
             SELECT c.*, p.name, p.discountPrice, p.image, (c.quantity * p.discountPrice) as itemTotal
-            FROM shoppingcart c
+            FROM ShoppingCart c
             JOIN product p ON c.itemID = p.itemID
             WHERE c.consumerID = ?`;
         
@@ -29,11 +33,15 @@ export const getCartData = async (req, res) => {
 // Add to cart
 export const addToCart = async (req, res) => {
     try {
-        const { itemID, marketID, user, quantity } = req.body;
-        const consumerID = user.consumerID;
+        const { itemID, marketID, quantity } = req.body;
+        const consumerID = req.session.user.consumerID || null;
+
+        if (!consumerID) {
+            return res.status(401).json({ success: false, error: "Please log in to add items to the cart." });
+        }
 
         const sql = `
-            INSERT INTO shoppingcart (itemID, marketID, consumerID, quantity) 
+            INSERT INTO ShoppingCart (itemID, marketID, consumerID, quantity) 
             VALUES (?, ?, ?, ?) 
             ON DUPLICATE KEY UPDATE quantity = quantity + ?`;
         
@@ -48,10 +56,14 @@ export const addToCart = async (req, res) => {
 
 export const updateQuantity = async (req, res) => {
     try {
-        const { itemID, quantity, user } = req.body;
-        const consumerID = user.consumerID;
+        const { itemID, quantity } = req.body;
+        const consumerID = req.session.user.consumerID || null;
 
-        const sql = "UPDATE shoppingcart SET quantity = ? WHERE itemID = ? AND consumerID = ?";
+        if (!consumerID) {
+            return res.status(401).json({ success: false, error: "Please log in to update the cart." });
+        }
+
+        const sql = "UPDATE ShoppingCart SET quantity = ? WHERE itemID = ? AND consumerID = ?";
         await pool.query(sql, [quantity, itemID, consumerID]);
 
         res.status(200).json({ success: true, message: "Quantity updated." });
@@ -63,10 +75,14 @@ export const updateQuantity = async (req, res) => {
 // Delete from the cart
 export const removeFromCart = async (req, res) => {
     try {
-        const { itemID, user } = req.body;
-        const consumerID = user.consumerID;
+        const { itemID } = req.body;
+        const consumerID = req.session.user.consumerID || null;
 
-        const sql = "DELETE FROM shoppingcart WHERE itemID = ? AND consumerID = ?";
+        if (!consumerID) {
+            return res.status(401).json({ success: false, error: "Please log in to update the cart." });
+        }
+
+        const sql = "DELETE FROM ShoppingCart WHERE itemID = ? AND consumerID = ?";
         await pool.query(sql, [itemID, consumerID]);
         
         res.status(200).json({ success: true, message: "Product has deleted." });
@@ -78,19 +94,22 @@ export const removeFromCart = async (req, res) => {
 // Complete purchase
 export const completePurchase = async (req, res) => {
     try {
-        const { user } = req.body;
-        const consumerID = user.consumerID;
+        const consumerID = req.session.user.consumerID || null;
+
+        if (!consumerID) {
+            return res.status(401).json({ success: false, error: "Please log in to complete the purchase." });
+        }
 
         // Drop the quantity
         const updateStockSql = `
             UPDATE product p
-            JOIN shoppingcart c ON p.itemID = c.itemID
+            JOIN ShoppingCart c ON p.itemID = c.itemID
             SET p.stock = p.stock - c.quantity
             WHERE c.consumerID = ?`;
         await pool.query(updateStockSql, [consumerID]);
 
         // Clear shopping cart
-        const clearCartSql = "DELETE FROM shoppingcart WHERE consumerID = ?";
+        const clearCartSql = "DELETE FROM ShoppingCart WHERE consumerID = ?";
         await pool.query(clearCartSql, [consumerID]);
 
         res.status(200).json({ success: true, message: "The purchase was successfully completed!" });

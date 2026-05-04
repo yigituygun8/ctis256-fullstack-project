@@ -95,7 +95,7 @@
              <% if (user && user.type === 'consumer') { %>
                <div class="detail-add-row">
                  <input type="number" id="qty-input" value="1" min="1" max="<%= product.stock %>" class="qty-input" />
-                 <button class="btn-primary" onclick="addToCart()">Add to Cart</button>
+                 <button class="btn-primary" onclick="addToCart()" style="cursor: pointer;">Add to Cart</button>
                </div>
                <p id="add-feedback" class="add-feedback"></p>
              <% } else if (!user) { %>
