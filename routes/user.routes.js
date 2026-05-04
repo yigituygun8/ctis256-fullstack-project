@@ -1,22 +1,20 @@
 import express from "express";
+import { getConsumerProfile, updateConsumerProfile } from "../controllers/consumerController.js";
+import { getMarketProfile, updateMarketProfile } from "../controllers/marketController.js";
 const router = express.Router();
 
-// Customer profile endpoints
-router.get('/profile', (req, res) => {
-  // GET /profile - customer profile page
-});
+// CUSTOMER PROFILE ENDPOINTS
+// GET /profile - customer profile page
+router.get('/profile', getConsumerProfile);
 
-router.post('/profile/edit', (req, res) => {
-  // POST /profile/edit - update customer profile
-});
+// POST /profile/edit - update customer profile
+router.post('/profile/edit', updateConsumerProfile);
 
-// Market profile endpoints
-router.get('/dashboard/profile', (req, res) => {
-  // GET /dashboard/profile - market profile page
-});
+// MARKET PROFILE ENDPOINTS
+// GET /dashboard/profile - market profile page
+router.get('/dashboard/profile', getMarketProfile);
 
-router.post('/dashboard/profile/edit', (req, res) => {
-  // POST /dashboard/profile/edit - update market profile
-});
+// POST /dashboard/profile/edit - update market profile
+router.post('/dashboard/profile/edit', updateMarketProfile);
 
 export default router;
