@@ -8,7 +8,6 @@ import productRoutes from "./routes/product.routes.js";
 import cartRoutes from "./routes/cart.routes.js";
 import userRoutes from "./routes/user.routes.js"
 
-
 const app = express()
 app.set('view engine', 'ejs')
 app.use(express.static('public'))
@@ -18,10 +17,11 @@ app.use(session({
     resave: false, // Don't save session if unmodified
     saveUninitialized: false, // Don't create session until something stored / modified
 }))
-
 // Home endpoint
 app.get('/', (req, res) => {
-  res.render('index', { user: req.session.user || null });
+  const status = req.session.status;
+  delete req.session.status;
+  res.render('index', { user: req.session.user || null, status });
 });
 
 // Mount route handlers at their base paths
