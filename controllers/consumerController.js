@@ -6,31 +6,40 @@ import { validationResult } from "express-validator";
 export const updateConsumerProfile = async (req, res) => {
     const errors = validationResult(req);
     const user_type = 'consumer';
-    const activeUser = req.session.activeUser;
+    const currentUser = req.session.user;
 
     if (!errors.isEmpty()) {
-        return res.render('profile', { form: req.body, errors: errors.mapped(), user_type, status: null });
+        return res.render('profile', {
+            user: req.body,
+            errors: errors.mapped(),
+            user_type,
+            status: null
+        });
     }
 
     try {
+        if (!currentUser) {
+            return res.redirect('/login'); // If user is not logged in, redirect to login page
+        }
+
         const { email, city, district, fullName, currentPassword, newPassword } = req.body;
-        const consumerID = activeUser.consumerID;
+        const consumerID = currentUser.consumerID;
 
         // Password check
-        const isMatch = await bcrypt.compare(currentPassword, activeUser.password);
+        const isMatch = await bcrypt.compare(currentPassword, currentUser.password);
         if (!isMatch) {
             req.session.status = { isSuccess: false, msg: "Password is incorrect" };
             return res.redirect('/profile');
         }
 
         // Has a new password been entered? If empty the old password will remain
-        let finalPassword = activeUser.password;
+        let finalPassword = currentUser.password;
         if (newPassword && newPassword.trim() !== "") {
             finalPassword = await bcrypt.hash(newPassword, 10);
         }
 
         // Email check
-        if (email !== activeUser.email) {
+        if (email !== currentUser.email) {
             const [rows] = await pool.query(`SELECT * FROM Consumer WHERE email = ? AND consumerID != ?`, [email, consumerID]);
             if (rows.length !== 0) {
                 req.session.status = { isSuccess: false, msg: "This email address is already in use." };
@@ -46,7 +55,9 @@ export const updateConsumerProfile = async (req, res) => {
 
         // Update session
         const [updatedRows] = await pool.query(`SELECT * FROM Consumer WHERE consumerID = ?`, [consumerID]);
-        req.session.activeUser = updatedRows[0];
+        req.session.user = { ...updatedRows[0], type: currentUser.type || user_type };
+        req.session.user_type = currentUser.type || user_type;
+        req.session.userId = consumerID;
         req.session.status = { isSuccess: true, msg: "Customer profile has updated successfully!" };
 
         res.redirect("/profile");
@@ -60,7 +71,12 @@ export const updateConsumerProfile = async (req, res) => {
 // Get consumer profile
 export const getConsumerProfile = async (req, res) => {
     try {
-        const consumerID = req.session.activeUser.consumerID;
+        const currentUser = req.session.user;
+        if (!currentUser) {
+            return res.redirect('/login');
+        }
+
+        const consumerID = currentUser.consumerID;
         const [rows] = await pool.query(
             "SELECT email, customerName, city, district FROM Consumer WHERE consumerID = ?", 
             [consumerID]

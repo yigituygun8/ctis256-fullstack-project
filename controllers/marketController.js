@@ -6,12 +6,12 @@ import { validationResult } from "express-validator";
 export const updateMarketProfile = async (req, res) => {
     const errors = validationResult(req);
     const user_type = 'market';
-    const activeUser = req.session.activeUser;
+    const currentUser = req.session.user;
 
     // Validation check
     if (!errors.isEmpty()) {
         return res.render('profile', { 
-            form: req.body, 
+            user: req.body,
             errors: errors.mapped(), 
             user_type, 
             status: null 
@@ -19,11 +19,15 @@ export const updateMarketProfile = async (req, res) => {
     }
 
     try {
+        if (!currentUser) {
+            return res.redirect('/login'); // If user is not logged in, redirect to login page
+        }
+
         const { email, city, district, marketName, currentPassword, newPassword } = req.body;
-        const marketID = activeUser.marketID;
+        const marketID = currentUser.marketID;
 
         // Password check
-        const isMatch = await bcrypt.compare(currentPassword, activeUser.password);
+        const isMatch = await bcrypt.compare(currentPassword, currentUser.password);
         
         if (!isMatch) {
             req.session.status = { 
@@ -34,13 +38,13 @@ export const updateMarketProfile = async (req, res) => {
         }
 
         // Password
-        let finalPassword = activeUser.password;
+        let finalPassword = currentUser.password;
         if (newPassword && newPassword.trim() !== "") { // If user wants to change the password
             finalPassword = await bcrypt.hash(newPassword, 10);
         }
 
         // Email check
-        if (email !== activeUser.email) {
+        if (email !== currentUser.email) {
             const [rows] = await pool.query(
                 `SELECT * FROM Market WHERE email = ? AND marketID != ?`, 
                 [email, marketID]
@@ -64,7 +68,9 @@ export const updateMarketProfile = async (req, res) => {
 
         // Update session
         const [updatedRows] = await pool.query(`SELECT * FROM Market WHERE marketID = ?`, [marketID]);
-        req.session.activeUser = updatedRows[0];
+        req.session.user = { ...updatedRows[0], type: currentUser.type || user_type };
+        req.session.user_type = currentUser.type || user_type;
+        req.session.userId = marketID;
         
         req.session.status = { 
             isSuccess: true, 
@@ -82,7 +88,12 @@ export const updateMarketProfile = async (req, res) => {
 // Get market profile
 export const getMarketProfile = async (req, res) => {
     try {
-        const marketID = req.session.activeUser.marketID;
+        const currentUser = req.session.user;
+        if (!currentUser) {
+            return res.redirect('/login');
+        }
+
+        const marketID = currentUser.marketID;
 
         const [rows] = await pool.query(
             "SELECT email, marketName, city, district FROM Market WHERE marketID = ?", 
