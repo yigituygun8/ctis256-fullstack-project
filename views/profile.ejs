@@ -35,8 +35,10 @@
 
       <!-- FLASH STATUS -->
       <% if (status) { %>
-        <div class="profile-flash <%= status.isSuccess ? 'flash-ok' : 'flash-err' %>">
-          <%= status.isSuccess ? '✓' : '✗' %> <%= status.msg %>
+        <div class="toast-container">
+          <div class="toast <%= status.isSuccess ? 'flash-ok' : 'flash-err' %>">
+            <%= status.isSuccess ? '✓' : '✗' %> <%= status.msg %>
+          </div>
         </div>
       <% } %>
 

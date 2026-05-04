@@ -9,6 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/style.css">
     <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <script src="/js/toast.js"></script>
     <style>
         .btn-primary {
             cursor: pointer;
@@ -36,6 +37,15 @@
     </style>
 </head>
 <body>
+    <% if(status) { %>
+        <div class="toast-container">
+            <div class="toast <%= status.isSuccess ? 'flash-ok' : 'flash-err' %>">
+                <span><%= status.msg %></span>
+            </div>
+        </div>
+    <% } %>
+
+
     <a class="btn-primary back-home" href="/">Back to Home Page</a>
     <div class="type-toggle">
         <a href="/login?type=consumer" class="<%= user_type === 'consumer' ? 'active' : '' %>">Consumer</a>
@@ -52,7 +62,11 @@
                     <span class="input-error"><%= errors.email.msg %></span>
                 <% } %>
                 <% if(loginError && loginError.field === 'email') { %>
-                    <span class="input-error"><%= loginError.msg %></span>
+                    <div class="toast-container">
+                        <div class="toast flash-err">
+                            <span"><%= loginError.msg %></span>
+                        </div>
+                    </div>
                 <% } %>
             </div>
 
@@ -63,7 +77,11 @@
                     <span class="input-error"><%= errors.password.msg %></span>
                 <% } %>
                 <% if(loginError && loginError.field === 'password') { %>
-                    <span class="input-error"><%= loginError.msg %></span>
+                    <div class="toast-container">
+                        <div class="toast flash-err">
+                            <span"><%= loginError.msg %></span>
+                        </div>
+                    </div>
                 <% } %>
             </div>
 

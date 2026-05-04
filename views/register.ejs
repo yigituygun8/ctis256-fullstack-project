@@ -26,8 +26,12 @@
                 <% if(errors.email) { %>
                     <span class="input-error"><%= errors.email.msg %></span>
                 <% } %>
-                <% if(error && error.field === 'email') { %>
-                    <span class="input-error"><%= error.msg %></span>
+                <% if(exists && exists.field === 'email') { %>
+                    <div class="toast-container">
+                        <div class="toast flash-err">
+                            <span"><%= exists.msg %></span>
+                        </div>
+                    </div>
                 <% } %>
             </div>
 
