@@ -3,7 +3,7 @@ import { pool } from "../config/dbpool.js";
 // Get cart data
 export const getCartData = async (req, res) => {
     try {
-        const consumerID = req.session.user.consumerID || null; 
+        const consumerID = req.session.user?.consumerID || null;
 
         if (!consumerID) {
             return res.status(401).json({ error: "Please log in to view the cart." });
@@ -34,7 +34,7 @@ export const getCartData = async (req, res) => {
 export const addToCart = async (req, res) => {
     try {
         const { itemID, marketID, quantity } = req.body;
-        const consumerID = req.session.user.consumerID || null;
+        const consumerID = req.session.user?.consumerID || null;
 
         if (!consumerID) {
             return res.status(401).json({ success: false, error: "Please log in to add items to the cart." });
@@ -57,7 +57,7 @@ export const addToCart = async (req, res) => {
 export const updateQuantity = async (req, res) => {
     try {
         const { itemID, quantity } = req.body;
-        const consumerID = req.session.user.consumerID || null;
+        const consumerID = req.session.user?.consumerID || null;
 
         if (!consumerID) {
             return res.status(401).json({ success: false, error: "Please log in to update the cart." });
@@ -76,7 +76,7 @@ export const updateQuantity = async (req, res) => {
 export const removeFromCart = async (req, res) => {
     try {
         const { itemID } = req.body;
-        const consumerID = req.session.user.consumerID || null;
+        const consumerID = req.session.user?.consumerID || null;
 
         if (!consumerID) {
             return res.status(401).json({ success: false, error: "Please log in to update the cart." });
@@ -94,7 +94,7 @@ export const removeFromCart = async (req, res) => {
 // Complete purchase
 export const completePurchase = async (req, res) => {
     try {
-        const consumerID = req.session.user.consumerID || null;
+        const consumerID = req.session.user?.consumerID || null;
 
         if (!consumerID) {
             return res.status(401).json({ success: false, error: "Please log in to complete the purchase." });

@@ -17,7 +17,7 @@
 
   <% if(status) { %>
     <div class="toast-container">
-      <div class="toast flash-ok">
+      <div class="toast <%= status.isSuccess ? 'flash-ok' : 'flash-err' %>  ">
         <span">
           <%= status.msg %></span>
       </div>

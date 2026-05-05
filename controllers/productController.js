@@ -41,7 +41,7 @@ export const getMarketDashboard = async (req, res) => {
         const [rows] = await pool.query(sql, [marketID]);
         
         // Show only not expired products
-        res.render('market/dashboard', { products: rows, user: req.session.user });
+        res.render('dashboard', { products: rows, user: req.session.user });
     } catch (error) {
         res.status(500).send("Error while getting products" + error);
     }
