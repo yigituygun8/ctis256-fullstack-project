@@ -2,7 +2,7 @@ import express from "express";
 const router = express.Router();
 import { pool } from "../config/dbpool.js";
 import upload from "../config/multer.js";
-import { getAllProducts, getProductDetails, searchProducts, getMarketDashboard, getProduct, createProduct } from "../controllers/productController.js";
+import { getAllProducts, getProductDetails, searchProducts, getMarketDashboard, getProduct, createProduct, updateProduct } from "../controllers/productController.js";
 import { requireMarket } from "../middlewares/auth.middleware.js";
 
 // Get all products from any market (public)
@@ -41,9 +41,7 @@ router.get('/dashboard/product/:id/edit',  async (req, res) => {
 });
 
 // Market dashboard - update existing product
-router.post('/dashboard/product/:id/edit', upload.single('image'), (req, res) => {
-  // POST /dashboard/product/:id/edit - update existing product
-});
+router.post('/dashboard/product/:id/edit', upload.single('image'), updateProduct);
 
 // Market dashboard - delete existing product
 router.post('/dashboard/product/:id/delete', (req, res) => {
