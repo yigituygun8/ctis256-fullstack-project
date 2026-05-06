@@ -68,6 +68,7 @@ export const createProduct = async (req, res) => {
         const image = req.file ? `/uploads/products/${req.file.filename}` : null; // Store the relative path to the uploaded image
         const marketID = req.session.userId;
 
+       
         const sql = `INSERT INTO product (marketID, name, stock, basePrice, discountPrice, expirationDate, image) 
                      VALUES (?, ?, ?, ?, ?, ?, ?)`;
         await pool.query(sql, [marketID, name, stock, basePrice, discountPrice, expirationDate, image]);
