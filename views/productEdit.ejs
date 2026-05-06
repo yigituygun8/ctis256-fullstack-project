@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+      <!-- NAV -->
+  <nav>
+    <div class="nav-inner">
+      <a href="/" class="nav-brand">UYGUN MARKETS</a>
+      <div class="nav-links">
+        <a href="/products">Browse Deals</a>
+        <% if (user) { %>
+          <% if (user.type === 'market') { %>
+            <a href="/dashboard" class="btn-primary">Dashboard</a>
+          <% } else { %>
+            <a href="/cart" class="btn-primary">Cart</a>
+          <% } %>
+          <form action="/logout" method="POST">
+            <button type="submit" class="nav-logout">Log out</button>
+          </form>
+        <% } else { %>
+          <a href="/login">Log in</a>
+          <a href="/register" class="btn-primary">Get Started</a>
+        <% } %>
+      </div>
+    </div>
+  </nav>
+
+  <%
+    const expDate = new Date(product.expirationDate);
+    const today = new Date();
+    today.setHours(0,0,0,0);
+    const daysLeft = Math.ceil((expDate - today) / (1000 * 60 * 60 * 24));
+    const urgency = daysLeft <= 2 ? 'urgent' : daysLeft <= 5 ? 'soon' : 'ok';
+    const savings = Math.round(((product.basePrice - product.discountPrice) / product.basePrice) * 100);
+  %>
+
+  <!-- PRODUCT DETAIL -->
+   <main class="page-main">
+       <div class="container">
+         <a href="/products" class="back-link">← Back to deals</a>
+     
+         <form class="detail-layout" method="post" action="updateProduct" enctype="multipart/form-data">
+     
+           <!-- IMAGE -->
+           <div class="detail-image-wrap">
+             <img src="/images/<%= product.image %>" alt="<%= product.name %>" class="detail-image" />
+             <span class="discount-badge detail-badge">-<%= savings %>%</span>
+             <button>Upload Image</button>
+           </div>
+     
+           <!-- INFO -->
+           <div class="detail-info">
+             <div class="detail-meta-top">
+               <span class="market-tag">🏪 <%= product.marketName %></span>
+               <span class="expiry-tag expiry-<%= urgency %>">
+                 <% if (daysLeft === 0) { %>Expires today!
+                 <% } else if (daysLeft === 1) { %>1 day left
+                 <% } else { %><%= daysLeft %> days left
+                 <% } %>
+               </span>
+             </div>
+             
+             <div class="input-field">
+                <input type="text" name="prodName" value="<%= product.name %>" placeholder=" ">
+                <span class="input-info placeholder">Email</span>
+            </div>
+
+             <h1 class="detail-title"><%= product.name %></h1>
+     
+             <div class="detail-pricing">
+               <span class="price-discounted detail-price">₺<%= product.discountPrice %></span>
+               <span class="price-original">₺<%= product.basePrice %> original</span>
+               <span class="savings-pill">You save ₺<%= (product.basePrice - product.discountPrice).toFixed(2) %></span>
+             </div>
+     
+             <div class="detail-facts">
+               <div class="detail-fact">
+                 <span class="fact-label">Location</span>
+                 <span class="fact-value"><%= product.district %>, <%= product.city %></span>
+               </div>
+               <div class="detail-fact">
+                 <span class="fact-label">Stock</span>
+                 <span class="fact-value"><%= product.stock %> available</span>
+               </div>
+               <div class="detail-fact">
+                 <span class="fact-label">Expiry date</span>
+                 <span class="fact-value"><%= expDate.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) %></span>
+               </div>
+             </div>
+     
+             <button class="btn-primary">Save Changes</button>
+
+           </div>
+         </div>
+        </form>
+    </main>
+
+    <%- include('partials/_footer') %>
+</body>
+</html>
