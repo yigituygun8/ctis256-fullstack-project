@@ -29,7 +29,7 @@ router.post('/dashboard/product', (req, res) => {
   // POST /dashboard/product - create new product
 });
 
-// Market dashboard - form to edit existing product
+// Market dashboard - form to edit existing product - render edit-product page with product details
 router.get('/dashboard/product/:id/edit', (req, res) => {
   // GET /dashboard/product/:id/edit - form to edit existing product
 });
