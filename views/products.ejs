@@ -21,8 +21,9 @@
         <% if (user) { %>
           <% if (user.type === 'market') { %>
             <a class="btn-primary" href="/dashboard">Dashboard</a>
+            <a class="btn-primary" href="/dashboard/profile">Profile</a>
           <% } else { %>
-            <a class="btn-primary" href="/cart">Cart</a>
+            <a class="btn-primary" href="/profile">Profile</a>
           <% } %>
           <form action="/logout" method="POST">
             <button type="submit" class="nav-logout">Log out</button>
@@ -228,6 +229,7 @@
       else alert('Could not add to cart.');
     }
 
+    // Event delegation for dynamically added cart buttons
     document.addEventListener('click', (e) => {
         if (e.target.classList.contains('btn-add-cart')) {
             const itemID = e.target.dataset.itemId;
@@ -268,7 +270,7 @@
       }
     }
 
-    loadCart();
+    loadCart(); // initial load. then subsequent updates happen through add/update/remove functions
   </script>
   <% } %>
 

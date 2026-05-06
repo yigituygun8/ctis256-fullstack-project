@@ -5,18 +5,16 @@ import { requireMarket, requireConsumer } from "../middlewares/auth.middleware.j
 
 const router = express.Router();
 
-// CUSTOMER PROFILE ENDPOINTS
-// GET /profile - customer profile page
-router.get('/profile', requireConsumer, getConsumerProfile);
-    
-// POST /profile/edit - update customer profile
-router.post('/profile/edit', requireConsumer, updateConsumerProfile);
+// CONSUMER PROFILE ROUTES - mounted requireConsumer middleware to all routes starting with /profile to ensure only consumers can access these routes
+router.use('/profile', requireConsumer);
 
-// MARKET PROFILE ENDPOINTS
-// GET /dashboard/profile - market profile page
-router.get('/dashboard/profile', requireMarket, getMarketProfile);
+router.get('/profile', getConsumerProfile);
+router.post('/profile/edit', updateConsumerProfile);
 
-// POST /dashboard/profile/edit - update market profile
-router.post('/dashboard/profile/edit', requireMarket, updateMarketProfile);
+// MARKET PROFILE ROUTES - mounted requireMarket middleware to all routes starting with /dashboard/profile to ensure only markets can access these routes
+router.use('/dashboard/profile', requireMarket);
+
+router.get('/dashboard/profile', getMarketProfile);
+router.post('/dashboard/profile/edit', updateMarketProfile);
 
 export default router;
