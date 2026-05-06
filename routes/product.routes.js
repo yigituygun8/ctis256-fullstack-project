@@ -1,7 +1,7 @@
 import express from "express";
 const router = express.Router();
 import { pool } from "../config/dbpool.js";
-import { getAllProducts, getProductDetails, searchProducts, getMarketDashboard } from "../controllers/productController.js";
+import { getAllProducts, getProductDetails, searchProducts, getMarketDashboard, createProduct } from "../controllers/productController.js";
 import { requireMarket } from "../middlewares/auth.middleware.js";
 
 // Get all products from any market (public)
@@ -26,8 +26,9 @@ router.get('/dashboard/product/new', (req, res) => {
 });
 
 // Market dashboard - create new product
-router.post('/dashboard/product', (req, res) => {
+router.post('/dashboard/product/new', (req, res) => {
   // POST /dashboard/product - create new product
+  
 });
 
 // Market dashboard - form to edit existing product - render edit-product page with product details

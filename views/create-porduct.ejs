@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>New Product - Uygun Markets</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-inner">
+      <a href="/" class="nav-brand">UYGUN MARKETS</a>
+      <div class="nav-links">
+        <a href="/products">Browse Deals</a>
+        <% if (user) { %>
+          <% if (user.type === 'market') { %>
+            <a href="/dashboard" class="btn-primary">Dashboard</a>
+          <% } else { %>
+            <a href="/cart" class="btn-primary">Cart</a>
+          <% } %>
+          <form action="/logout" method="POST">
+            <button type="submit" class="nav-logout">Log out</button>
+          </form>
+        <% } else { %>
+          <a href="/login">Log in</a>
+          <a href="/register" class="btn-primary">Get Started</a>
+        <% } %>
+      </div>
+    </div>
+  </nav>
+
+  <!-- PRODUCT DETAIL -->
+   <main class="page-main">
+    <!--Add form -->
+       <div class="container">
+         <a href="/products" class="back-link">← Back to deals</a>
+     
+            <form action="/products" method="POST" enctype="multipart/form-data">
+  <div class="detail-layout">
+
+    <!-- IMAGE -->
+    <div class="detail-image-wrap">
+      <h2>Upload Product Image</h2>
+      <input type="file" name="image" accept="image/*" required />
+    </div>
+
+    <!-- INFO -->
+    <div class="detail-info">
+
+      <h1 class="detail-title">
+        <input type="text" name="name" placeholder="Product Name" required />
+      </h1>
+
+      <div class="detail-pricing">
+        <div>
+          <label>Discounted Price</label>
+          <input type="number" name="discountPrice" step="0.01" required />
+        </div>
+
+        <div>
+          <label>Base Price</label>
+          <input type="number" name="basePrice" step="0.01" required />
+        </div>
+      </div>
+
+      <div class="detail-facts">
+
+        <div class="detail-fact">
+          <span class="fact-label">Stock</span>
+          <input type="number" name="stock" min="1" required />
+        </div>
+
+        <div class="detail-fact">
+          <span class="fact-label">Expiry Date</span>
+          <input type="date" name="expirationDate" required />
+        </div>
+
+      </div>
+
+      <!-- Hidden marketID (comes from session ideally) -->
+      <input type="hidden" name="marketID" value="<%= user.id %>" />
+
+      <div class="detail-add-row">
+        <button type="submit" class="btn-primary">Add Product</button>
+      </div>
+
+    </div>
+  </div>
+</form>
+         </div>
+       </div>
+    </main>
+
+    <%- include('partials/_footer') %>
+    
+  <% if (user && user.type === 'consumer') { %>
+  <script>
+    async function addToCart() {
+      const qty = parseInt(document.getElementById('qty-input').value) || 1;
+      const feedback = document.getElementById('add-feedback');
+
+      const res = await fetch('/cart/add', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          itemID: "<%= product.itemID %>",
+          marketID: "<%= product.marketID %>",
+          quantity: qty
+        })
+      });
+
+      const data = await res.json();
+      feedback.textContent = data.success ? 'Added to cart!' : 'Could not add to cart.';
+      feedback.className = 'add-feedback ' + (data.success ? 'feedback-ok' : 'feedback-err');
+      setTimeout(() => { feedback.textContent = ''; }, 3000);
+    }
+  </script>
+  <% } %>
+
+</body>
+</html>
