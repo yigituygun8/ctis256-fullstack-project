@@ -14,21 +14,36 @@ export const getAllProducts = async (req, res) => {
     }
 };
 
-// Get specific product's details
-export const getProductDetails = async (req, res) => {
+export const getProduct = async (id) => {
     try {
-        const { id } = req.params;
         const sql = `SELECT p.*, m.marketName, m.city, m.district 
                      FROM product p 
                      JOIN Market m ON p.marketID = m.marketID 
                      WHERE p.itemID = ?`;
         const [rows] = await pool.query(sql, [id]);
         
-        if (rows.length === 0) return res.status(404).send("Product not found");
-        
-        res.render('product-details', { product: rows[0], user: req.session.user });
+        return rows[0];
     } catch (error) {
-        res.status(500).send("Error while getting product details" + error);
+        console.error("Database error:", error);
+        throw error; // Let the controller handle the error
+    }
+};
+
+// Get specific product's details
+export const getProductDetails = async (req, res) => {
+    try {
+        const { id } = req.params;
+        
+        // Use 'await' here so the code waits for the database!
+        const product = await getProduct(id);
+
+        if (!product) {
+            return res.status(404).send("Product not found");
+        }
+
+        res.render('product-details', { product: product, user: req.session.user});
+    } catch (error) {
+        res.status(500).send("Internal Server Error");
     }
 };
 
