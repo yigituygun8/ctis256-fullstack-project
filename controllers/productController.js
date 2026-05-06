@@ -28,7 +28,7 @@ export const getProductDetails = async (req, res) => {
         
         res.render('product-details', { product: rows[0], user: req.session.user });
     } catch (error) {
-        res.status(500).send("Error while getting details" + error);
+        res.status(500).send("Error while getting product details" + error);
     }
 };
 
@@ -36,14 +36,13 @@ export const getProductDetails = async (req, res) => {
 export const getMarketDashboard = async (req, res) => {
     try {
         const marketID = req.session.userId; // marketID comes from session
-        const sql = `SELECT *, (expirationDate < CURDATE()) as isExpired 
-                     FROM product WHERE marketID = ?`;
+        const sql = `SELECT * FROM product WHERE marketID = ? ORDER BY expirationDate ASC`;
         const [rows] = await pool.query(sql, [marketID]);
         
         // Show only not expired products
         res.render('dashboard', { products: rows, user: req.session.user });
     } catch (error) {
-        res.status(500).send("Error while getting products" + error);
+        res.status(500).send("Error while getting market products" + error);
     }
 };
 
@@ -59,7 +58,7 @@ export const createProduct = async (req, res) => {
         
         res.redirect('/dashboard'); // After insertion, go back to the dashboard
     } catch (error) {
-        res.status(500).send("Product could not added." + error);
+        res.status(500).send("Product could not be added." + error);
     }
 };
 
@@ -77,7 +76,7 @@ export const updateProduct = async (req, res) => {
         
         res.redirect('/dashboard');
     } catch (error) {
-        res.status(500).send("Product could not updated" + error);
+        res.status(500).send("Product could not be updated" + error);
     }
 };
 
@@ -92,7 +91,7 @@ export const deleteProduct = async (req, res) => {
         
         res.redirect('/dashboard');
     } catch (error) {
-        res.status(500).send("Product could not deleted" + error);
+        res.status(500).send("Product could not be deleted" + error);
     }
 };
 

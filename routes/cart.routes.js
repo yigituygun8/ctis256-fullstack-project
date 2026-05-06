@@ -4,7 +4,8 @@ const router = express.Router();
 
 // View shopping cart
 router.get('/', (req, res) => {
-  // P.S. Initially, we decided that we could use a cart page but then we changed our mind and decided to use a cart sidebar instead. So, this endpoint is not used in the project but we left it here just in case we want to use it in the future.
+  // P.S. Initially, we decided that we could use a cart page but then we changed our mind and decided to use a cart sidebar instead. 
+  // So, this endpoint is not used in the project but we left it here just in case we want to use it in the future.
   res.redirect("/products");
 });
 
