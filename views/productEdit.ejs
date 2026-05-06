@@ -71,36 +71,43 @@
                         </span>
                     </div>
 
-                    <div class="detail-pricing" style="width: 700px;">
+                    <div class="detail-pricing" style="width: 700px; display: inline-block;">
                         <div class="input-field">
                             <input style="border: 1px solid var(--green-dark);" type="text" name="prodName" value="" placeholder=" ">
                             <span class="input-info placeholder" style="opacity: 0.8 ;"><%= product.name %> (Name)</span>
+                            <span class="input-change-line placeholder"></span>
                         </div>
                         <div class="input-field">
                             <input style="border: 1px solid var(--green-dark);" type="text" name="prodPrice" value="" placeholder=" ">
                             <span class="input-info placeholder" style="opacity: 0.8 ;"><%= product.basePrice %> (Price)</span>
+                            <span class="input-change-line placeholder"></span>
                         </div>
                         <div class="input-field">
                             <input style="border: 1px solid var(--green-dark);" type="text" name="prodDiscPrice" value="" placeholder=" ">
                             <span class="input-info placeholder" style="opacity: 0.8 ;"><%= product.discountPrice %> (Discounted Price)</span>
+                            <span class="input-change-line placeholder"></span>
                         </div>
                         <div class="input-field">
                             <input style="border: 1px solid var(--green-dark);" type="text" name="district" value="" placeholder=" ">
                             <span class="input-info placeholder" style="opacity: 0.8 ;"><%= product.district %> (District)</span>
+                            <span class="input-change-line placeholder"></span>
                         </div>
                          <div class="input-field">
                             <input style="border: 1px solid var(--green-dark);" type="text" name="city" value="" placeholder=" ">
                             <span class="input-info placeholder" style="opacity: 0.8 ;"><%= product.city %> (City)</span>
+                            <span class="input-change-line placeholder"></span>
                         </div>
                          <div class="input-field">
                             <input style="border: 1px solid var(--green-dark);" type="text" name="prodDiscPrice" value="" placeholder=" ">
                             <span class="input-info placeholder" style="opacity: 0.8 ;"><%= product.stock %> (Stock)</span>
+                            <span class="input-change-line placeholder"></span>
                         </div>
                          <div class="input-field">
                             <input style=" border: 1px solid var(--green-dark);" type="text" name="prodDiscPrice" value="" placeholder=" ">
                             <span class="input-info placeholder" style="opacity: 0.8 ;">
                                 <%= expDate.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) %> (Expiry)
                             </span>
+                            <span class="input-change-line placeholder"></span>
                         </div>
                     </div>
                     <button type="submit" class="btn-primary" style="margin-bottom: 10px;">Save</button>
