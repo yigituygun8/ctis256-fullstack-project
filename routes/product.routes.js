@@ -20,8 +20,9 @@ router.use('/dashboard', requireMarket); // apply the requireMarket middleware t
 router.get('/dashboard', getMarketDashboard);
 
 // Market dashboard - form to add new product
-router.get('/dashboard/product/:id/new', (req, res) => {
-  // GET /dashboard/product/:id/new - form to add new product
+router.get('/dashboard/product/new', (req, res) => {
+  // GET /dashboard/product/new - form to add new product
+  res.render("create-product", { user: req.session.user, errors: {}, form: {} });
 });
 
 // Market dashboard - create new product
