@@ -4,7 +4,7 @@ import path from 'path';
 // Configure storage
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, "uploads/products"); // Store relative path to the uploads directory in public folder
+    cb(null, "public/images"); // Store relative path to the uploads directory in public folder
   },
   filename: (req, file, cb) => {
     // Generate unique filename: timestamp-randomstring-originalname
