@@ -88,7 +88,7 @@ export const updateProduct = async (req, res) => {
         // Get current product to preserve image if not updating it
         const getProductSql = "SELECT * FROM product WHERE itemID = ? AND marketID = ?";
         const [currentProduct] = await pool.query(getProductSql, [id, marketID]);
-        console.log(currentProduct);
+
         if (currentProduct.length === 0) {
             return res.status(404).send("Product not found");
         }

@@ -2,8 +2,8 @@ import express from "express";
 const router = express.Router();
 import { pool } from "../config/dbpool.js";
 import upload from "../config/multer.js";
-import { getAllProducts, getProductDetails, searchProducts, getMarketDashboard, getProduct, createProduct, updateProduct } from "../controllers/productController.js";
-import { requireMarket } from "../middlewares/auth.middleware.js";
+import { getAllProducts, getProductDetails, searchProducts, getMarketDashboard, getProduct, createProduct, updateProduct, deleteProduct } from "../controllers/productController.js";
+import { requireMarket, requireProductOwnership } from "../middlewares/auth.middleware.js";
 
 // Get all products from any market (public)
 router.get('/products', getAllProducts);
@@ -30,20 +30,21 @@ router.get('/dashboard/product/new', (req, res) => {
 router.post('/dashboard/product/new', upload.single('image'), createProduct);
 
 // Market dashboard - form to edit existing product - render edit-product page with product details
-router.get('/dashboard/product/:id/edit',  async (req, res) => {
-  // GET /dashboard/product/:id/edit - form to edit existing product
+router.get('/dashboard/product/:id/edit', requireProductOwnership, async (req, res) => {
   const { id } = req.params;
-  //console.log(id);
-  const product = await getProduct(id);
-  res.render("productEdit", { product: product, user: req.session.user })
+  
+  try {
+    const product = await getProduct(id);
+    res.render("productEdit", { product: product, user: req.session.user });
+  } catch (error) {
+    res.status(500).send("Error retrieving product");
+  }
 });
 
 // Market dashboard - update existing product
-router.post('/dashboard/product/:id/edit', upload.single('image'), updateProduct);
+router.post('/dashboard/product/:id/edit', requireProductOwnership, upload.single('image'), updateProduct);
 
 // Market dashboard - delete existing product
-router.post('/dashboard/product/:id/delete', (req, res) => {
-  // POST /dashboard/product/:id/delete - delete existing product
-});
+router.post('/dashboard/product/:id/delete', requireProductOwnership, deleteProduct);
 
 export default router;

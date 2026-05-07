@@ -50,9 +50,10 @@
             <form class="detail-layout" method="post" action="/dashboard/product/<%= product.itemID %>/edit" enctype="multipart/form-data">
                 <!-- IMAGE -->
                 <div class="detail-image-wrap">
-                    <img src="/images/<%= product.image %>" alt="<%= product.name %>" class="detail-image" />
+                    <img src="/images/<%= product.image %>" alt="<%= product.name %>" class="detail-image" id="detail-image" />
                     <label for="image" class="btn-secondary" style="display:block; margin-top: 12px; text-align: center; cursor: pointer;">Upload Image</label>
-                    <input type="file" id="image" name="image" accept="image/*" required style="display: none;">
+                    <input type="file" id="image" name="image" accept="image/*" required style="display: none;"
+                    onchange="document.getElementById('detail-image').src = window.URL.createObjectURL(this.files[0])">
                 </div>
                 <!-- INFO -->
                 <div class="detail-info" >
@@ -95,7 +96,7 @@
                             <span class="input-info placeholder" style="opacity: 0.8 ;">Expiry Date</span>
                         </div>
                     </div>
-                    <button type="submit" class="btn-primary" style="margin-bottom: 10px;">Save</button>
+                    <button type="submit" class="btn-primary" style="margin-bottom: 10px; max-width: 500px">Save</button>
                 </div>
             </form>
         </div>
