@@ -51,6 +51,7 @@ img { max-width: 100%; display: block; }
   font-weight: 600;
   font-size: 0.95rem;
   transition: background 0.2s;
+  cursor: pointer;
 }
 .btn-primary:hover { background: var(--green-mid); }
 
@@ -63,6 +64,7 @@ img { max-width: 100%; display: block; }
   font-weight: 600;
   font-size: 0.95rem;
   border: 1.5px solid var(--green-dark);
+  cursor: pointer;
   transition: background 0.2s;
 }
 .btn-secondary:hover { background: var(--green-pale); }
@@ -75,6 +77,7 @@ img { max-width: 100%; display: block; }
   border-radius: 10px;
   font-weight: 600;
   font-size: 0.95rem;
+  cursor: pointer;
   transition: opacity 0.2s;
 }
 .btn-white:hover { opacity: 0.85; }
@@ -369,9 +372,13 @@ nav {
   background-color: var(--cream);
   justify-content: right;
   gap: 12px;
-  width: 80%;
+  width: 90%;
   padding: 10px;
   border-radius: 20px;
+}
+
+.input-border {
+  border: 1px solid var(--green-dark);
 }
 
 .input-error{
@@ -393,6 +400,20 @@ nav {
   pointer-events: none;
 }
 
+.input-change-line{
+  position: absolute;
+  opacity: 0;
+  top: 49%;
+  left: 5%;
+  transition: all 0.55s ease;
+  pointer-events: none;
+  transform: scaleX(0);
+  transform-origin: left;
+  background: linear-gradient(to right,  var(--green-dark), var(--green-pale));
+  height: 2px;
+  width: 200px;
+}
+
 .placeholder{
   font-weight: bold;
   color: var(--green-dark);
@@ -401,10 +422,13 @@ nav {
 .input-field input{
   border-radius: 20px;
   border: 2px solid var(--cream);
-  transition: all 0.3s;
+  transition: all 0.5s ease;
   padding: 5px;
+  padding-left: 20px;
   height: 50px;
   width: 70%;
+  font-size: 16px;
+  color: var(--green-dark);
 }
 
 .input-field input:hover {
@@ -421,6 +445,18 @@ nav {
 .input-field input:focus + .input-info , .input-field input:not(:placeholder-shown) + .input-info{
   opacity: 1;
   left: 70%;
+  /*text-decoration: line-through;*/
+}
+
+.input-field input:focus ~ .input-change-line , .input-field input:not(:placeholder-shown) ~ .input-change-line{
+  opacity: 1;
+  left: 70%;
+  transform: scaleX(1);
+}
+
+/* Make input-border class specific enough to override the default input rule */
+.input-field .input-border {
+  border: 1px solid var(--green-dark);
 }
 
 .auth-field h1{
@@ -504,10 +540,6 @@ footer {
   background: var(--white);
   border-bottom: 1px solid rgba(26,74,46,0.08);
   padding: 40px 0 32px;
-}
-
-.page-header .btn-primary {
-  cursor: pointer;
 }
 
 .page-title {

@@ -14,21 +14,36 @@ export const getAllProducts = async (req, res) => {
     }
 };
 
-// Get specific product's details
-export const getProductDetails = async (req, res) => {
+export const getProduct = async (id) => {
     try {
-        const { id } = req.params;
         const sql = `SELECT p.*, m.marketName, m.city, m.district 
                      FROM product p 
                      JOIN Market m ON p.marketID = m.marketID 
                      WHERE p.itemID = ?`;
         const [rows] = await pool.query(sql, [id]);
         
-        if (rows.length === 0) return res.status(404).send("Product not found");
-        
-        res.render('product-details', { product: rows[0], user: req.session.user });
+        return rows[0];
     } catch (error) {
-        res.status(500).send("Error while getting product details" + error);
+        console.error("Database error:", error);
+        throw error; // Let the controller handle the error
+    }
+};
+
+// Get specific product's details
+export const getProductDetails = async (req, res) => {
+    try {
+        const { id } = req.params;
+        
+        // Use 'await' here so the code waits for the database!
+        const product = await getProduct(id);
+
+        if (!product) {
+            return res.status(404).send("Product not found");
+        }
+
+        res.render('product-details', { product: product, user: req.session.user});
+    } catch (error) {
+        res.status(500).send("Internal Server Error");
     }
 };
 
@@ -49,7 +64,8 @@ export const getMarketDashboard = async (req, res) => {
 // Add a new product
 export const createProduct = async (req, res) => {
     try {
-        const { name, stock, basePrice, discountPrice, expirationDate, image } = req.body;
+        const { name, stock, basePrice, discountPrice, expirationDate } = req.body;
+        const image = req.file ? `/public/images/${req.file.filename}` : null; // Store the relative path to the uploaded image
         const marketID = req.session.userId;
 
         const sql = `INSERT INTO product (marketID, name, stock, basePrice, discountPrice, expirationDate, image) 
@@ -66,14 +82,32 @@ export const createProduct = async (req, res) => {
 export const updateProduct = async (req, res) => {
     try {
         const { id } = req.params;
-        const { name, stock, basePrice, discountPrice, expirationDate, image } = req.body;
+        let { name, stock, basePrice, discountPrice, expirationDate } = req.body;
         const marketID = req.session.userId;
 
-        const sql = `UPDATE product 
+        // Get current product to preserve image if not updating it
+        const getProductSql = "SELECT * FROM product WHERE itemID = ? AND marketID = ?";
+        const [currentProduct] = await pool.query(getProductSql, [id, marketID]);
+
+        if (currentProduct.length === 0) {
+            return res.status(404).send("Product not found");
+        }
+
+        // Use new image if provided, otherwise keep existing image. We cannot write null for fallback
+        const image = req.file ? `${req.file.filename}` : currentProduct[0].image;
+        name = name?.trim() || currentProduct[0].name;
+        stock = stock?.trim() || currentProduct[0].stock;
+        basePrice = basePrice?.trim() || currentProduct[0].basePrice;
+        discountPrice = discountPrice?.trim() || currentProduct[0].discountPrice;
+        expirationDate = expirationDate || currentProduct[0].expirationDate;
+
+        const sql = `UPDATE product
                      SET name = ?, stock = ?, basePrice = ?, discountPrice = ?, expirationDate = ?, image = ? 
                      WHERE itemID = ? AND marketID = ?`;
         await pool.query(sql, [name, stock, basePrice, discountPrice, expirationDate, image, id, marketID]);
         
+
+        req.session.status = { isSuccess: true, msg: "Product Updated Successfuly" }
         res.redirect('/dashboard');
     } catch (error) {
         res.status(500).send("Product could not be updated" + error);
