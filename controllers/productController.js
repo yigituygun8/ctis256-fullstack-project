@@ -125,7 +125,7 @@ export const deleteProduct = async (req, res) => {
         
         res.redirect('/dashboard');
     } catch (error) {
-        res.status(500).send("Silme işlemi başarısız.");
+        res.status(500).send("Product could not be deleted" + error);
     }
 };
 
