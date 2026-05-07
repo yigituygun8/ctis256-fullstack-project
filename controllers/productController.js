@@ -82,25 +82,32 @@ export const createProduct = async (req, res) => {
 export const updateProduct = async (req, res) => {
     try {
         const { id } = req.params;
-        const { name, stock, basePrice, discountPrice, expirationDate } = req.body;
+        let { name, stock, basePrice, discountPrice, expirationDate } = req.body;
         const marketID = req.session.userId;
 
         // Get current product to preserve image if not updating it
-        const getProductSql = "SELECT image FROM product WHERE itemID = ? AND marketID = ?";
+        const getProductSql = "SELECT * FROM product WHERE itemID = ? AND marketID = ?";
         const [currentProduct] = await pool.query(getProductSql, [id, marketID]);
-        
+        console.log(currentProduct);
         if (currentProduct.length === 0) {
             return res.status(404).send("Product not found");
         }
 
         // Use new image if provided, otherwise keep existing image. We cannot write null for fallback
-        const image = req.file ? `/public/images/${req.file.filename}` : currentProduct[0].image;
+        const image = req.file ? `${req.file.filename}` : currentProduct[0].image;
+        name = name?.trim() || currentProduct[0].name;
+        stock = stock?.trim() || currentProduct[0].stock;
+        basePrice = basePrice?.trim() || currentProduct[0].basePrice;
+        discountPrice = discountPrice?.trim() || currentProduct[0].discountPrice;
+        expirationDate = expirationDate || currentProduct[0].expirationDate;
 
-        const sql = `UPDATE product 
+        const sql = `UPDATE product
                      SET name = ?, stock = ?, basePrice = ?, discountPrice = ?, expirationDate = ?, image = ? 
                      WHERE itemID = ? AND marketID = ?`;
         await pool.query(sql, [name, stock, basePrice, discountPrice, expirationDate, image, id, marketID]);
         
+
+        req.session.status = { isSuccess: true, msg: "Product Updated Successfuly" }
         res.redirect('/dashboard');
     } catch (error) {
         res.status(500).send("Product could not be updated" + error);

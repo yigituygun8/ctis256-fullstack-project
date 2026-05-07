@@ -39,24 +39,21 @@
         const today = new Date();
         today.setHours(0, 0, 0, 0);
         const daysLeft = Math.ceil((expDate - today) / (1000 * 60 * 60 * 24));
-        const urgency = daysLeft <= 2 ? 'urgent' : daysLeft <= 5 ? 'soon' : 'ok';
-        const savings = Math.round(((product.basePrice - product.discountPrice) / product.basePrice) * 100);
+        const urgency = daysLeft <= 2 ? 'urgent' : daysLeft <= 5 ? 'soon' : 'ok';   
     %>
 
     <!-- PRODUCT DETAIL -->
     <main class="page-main">
         <div class="container">
-            <a href="/products" class="back-link">← Back to deals</a>
+            <a href="/dashboard" class="back-link">← Back to Dashboard</a>
 
-            <form class="detail-layout" method="post" action="/dashboard/product/<%= product.id %>/edit" enctype="multipart/form-data">
+            <form class="detail-layout" method="post" action="/dashboard/product/<%= product.itemID %>/edit" enctype="multipart/form-data">
                 <!-- IMAGE -->
                 <div class="detail-image-wrap">
                     <img src="/images/<%= product.image %>" alt="<%= product.name %>" class="detail-image" />
-                    <span class="discount-badge detail-badge">-<%= savings %>%</span>
-                    <label for="image" class="btn-secondary detail-image-wrap">Upload Image</label>
-                    <input type="file" id="image" name="image" class="btn-secondary detail-image-wrap"></input>
+                    <label for="image" class="btn-secondary" style="display:block; margin-top: 12px; text-align: center; cursor: pointer;">Upload Image</label>
+                    <input type="file" id="image" name="image" accept="image/*" required style="display: none;">
                 </div>
-
                 <!-- INFO -->
                 <div class="detail-info" >
                     <div class="detail-meta-top">
@@ -72,36 +69,30 @@
                         </span>
                     </div>
 
-                    <div class="detail-pricing" style="width: 800px;">
+                    <div class="detail-pricing" style="width: 800px; display: inline-block;">
                         <div class="input-field">
-                            <input class="input-border" type="text" name="prodName" value="" placeholder=" ">
+                            <input class="input-border" type="text" name="name" value="" placeholder=" ">
                             <span class="input-info placeholder" style="opacity: 0.8 ;"><%= product.name %> (Name)</span>
+                            <span class="input-change-line placeholder"></span>
                         </div>
                         <div class="input-field">
-                            <input class="input-border" type="text" name="prodPrice" value="" placeholder=" ">
+                            <input class="input-border" type="text" name="basePrice" value="" placeholder=" ">
                             <span class="input-info placeholder" style="opacity: 0.8 ;"><%= product.basePrice %> (Price)</span>
+                            <span class="input-change-line placeholder"></span>
                         </div>
                         <div class="input-field">
-                            <input class="input-border" type="text" name="prodDiscPrice" value="" placeholder=" ">
+                            <input class="input-border" type="text" name="discountPrice" value="" placeholder=" ">
                             <span class="input-info placeholder" style="opacity: 0.8 ;"><%= product.discountPrice %> (Discounted Price)</span>
-                        </div>
-                        <div class="input-field">
-                            <input class="input-border" type="text" name="district" value="" placeholder=" ">
-                            <span class="input-info placeholder" style="opacity: 0.8 ;"><%= product.district %> (District)</span>
+                            <span class="input-change-line placeholder"></span>
                         </div>
                          <div class="input-field">
-                            <input class="input-border" type="text" name="city" value="" placeholder=" ">
-                            <span class="input-info placeholder" style="opacity: 0.8 ;"><%= product.city %> (City)</span>
-                        </div>
-                         <div class="input-field">
-                            <input class="input-border" type="text" name="prodDiscPrice" value="" placeholder=" ">
+                            <input class="input-border" type="text" name="stock" value="" placeholder=" ">
                             <span class="input-info placeholder" style="opacity: 0.8 ;"><%= product.stock %> (Stock)</span>
+                            <span class="input-change-line placeholder"></span>
                         </div>
                          <div class="input-field">
-                            <input class="input-border" type="text" name="prodDiscPrice" value="" placeholder=" ">
-                            <span class="input-info placeholder" style="opacity: 0.8 ;">
-                                <%= expDate.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) %> (Expiry)
-                            </span>
+                            <input class="input-border" type="date" name="expirationDate" value="<%= product.expirationDate.toISOString().split('T')[0] %>" placeholder=" ">
+                            <span class="input-info placeholder" style="opacity: 0.8 ;">Expiry Date</span>
                         </div>
                     </div>
                     <button type="submit" class="btn-primary" style="margin-bottom: 10px;">Save</button>
