@@ -53,7 +53,8 @@
                 <div class="detail-image-wrap">
                     <img src="/images/<%= product.image %>" alt="<%= product.name %>" class="detail-image" />
                     <span class="discount-badge detail-badge">-<%= savings %>%</span>
-                    <button type="button" class="btn-secondary detail-image-wrap">Upload Image</button>
+                    <label for="image" class="btn-secondary detail-image-wrap">Upload Image</label>
+                    <input type="file" id="image" name="image" class="btn-secondary detail-image-wrap"></input>
                 </div>
 
                 <!-- INFO -->
@@ -71,33 +72,33 @@
                         </span>
                     </div>
 
-                    <div class="detail-pricing" style="width: 700px;">
+                    <div class="detail-pricing" style="width: 800px;">
                         <div class="input-field">
-                            <input style="border: 1px solid var(--green-dark);" type="text" name="prodName" value="" placeholder=" ">
+                            <input class="input-border" type="text" name="prodName" value="" placeholder=" ">
                             <span class="input-info placeholder" style="opacity: 0.8 ;"><%= product.name %> (Name)</span>
                         </div>
                         <div class="input-field">
-                            <input style="border: 1px solid var(--green-dark);" type="text" name="prodPrice" value="" placeholder=" ">
+                            <input class="input-border" type="text" name="prodPrice" value="" placeholder=" ">
                             <span class="input-info placeholder" style="opacity: 0.8 ;"><%= product.basePrice %> (Price)</span>
                         </div>
                         <div class="input-field">
-                            <input style="border: 1px solid var(--green-dark);" type="text" name="prodDiscPrice" value="" placeholder=" ">
+                            <input class="input-border" type="text" name="prodDiscPrice" value="" placeholder=" ">
                             <span class="input-info placeholder" style="opacity: 0.8 ;"><%= product.discountPrice %> (Discounted Price)</span>
                         </div>
                         <div class="input-field">
-                            <input style="border: 1px solid var(--green-dark);" type="text" name="district" value="" placeholder=" ">
+                            <input class="input-border" type="text" name="district" value="" placeholder=" ">
                             <span class="input-info placeholder" style="opacity: 0.8 ;"><%= product.district %> (District)</span>
                         </div>
                          <div class="input-field">
-                            <input style="border: 1px solid var(--green-dark);" type="text" name="city" value="" placeholder=" ">
+                            <input class="input-border" type="text" name="city" value="" placeholder=" ">
                             <span class="input-info placeholder" style="opacity: 0.8 ;"><%= product.city %> (City)</span>
                         </div>
                          <div class="input-field">
-                            <input style="border: 1px solid var(--green-dark);" type="text" name="prodDiscPrice" value="" placeholder=" ">
+                            <input class="input-border" type="text" name="prodDiscPrice" value="" placeholder=" ">
                             <span class="input-info placeholder" style="opacity: 0.8 ;"><%= product.stock %> (Stock)</span>
                         </div>
                          <div class="input-field">
-                            <input style=" border: 1px solid var(--green-dark);" type="text" name="prodDiscPrice" value="" placeholder=" ">
+                            <input class="input-border" type="text" name="prodDiscPrice" value="" placeholder=" ">
                             <span class="input-info placeholder" style="opacity: 0.8 ;">
                                 <%= expDate.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) %> (Expiry)
                             </span>

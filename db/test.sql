@@ -75,14 +75,15 @@ CREATE TABLE `ShoppingCart` (
 --
 
 CREATE TABLE `product` (
+  `itemID` int NOT NULL AUTO_INCREMENT,
   `marketID` int NOT NULL,
-  `itemID` int NOT NULL,
   `name` varchar(30) NOT NULL,
   `expirationDate` date NOT NULL,
   `image` text,
   `basePrice` float NOT NULL,
   `discountPrice` float NOT NULL,
-  `stock` int NOT NULL
+  `stock` int NOT NULL,
+  PRIMARY KEY (`itemID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
@@ -177,7 +178,9 @@ ALTER TABLE `ShoppingCart`
 -- Indexes for table `product`
 --
 ALTER TABLE `product`
-  ADD PRIMARY KEY (`marketID`,`itemID`);
+  ADD KEY `marketID` (`marketID`);
+
+ALTER TABLE `product` AUTO_INCREMENT = 5038;
 
 COMMIT;
 

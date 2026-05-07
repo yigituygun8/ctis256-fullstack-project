@@ -65,10 +65,9 @@ export const getMarketDashboard = async (req, res) => {
 export const createProduct = async (req, res) => {
     try {
         const { name, stock, basePrice, discountPrice, expirationDate } = req.body;
-        const image = req.file ? `/uploads/products/${req.file.filename}` : null; // Store the relative path to the uploaded image
+        const image = req.file ? `/public/images/${req.file.filename}` : null; // Store the relative path to the uploaded image
         const marketID = req.session.userId;
 
-       
         const sql = `INSERT INTO product (marketID, name, stock, basePrice, discountPrice, expirationDate, image) 
                      VALUES (?, ?, ?, ?, ?, ?, ?)`;
         await pool.query(sql, [marketID, name, stock, basePrice, discountPrice, expirationDate, image]);
@@ -95,7 +94,7 @@ export const updateProduct = async (req, res) => {
         }
 
         // Use new image if provided, otherwise keep existing image. We cannot write null for fallback
-        const image = req.file ? `/uploads/products/${req.file.filename}` : currentProduct[0].image;
+        const image = req.file ? `/public/images/${req.file.filename}` : currentProduct[0].image;
 
         const sql = `UPDATE product 
                      SET name = ?, stock = ?, basePrice = ?, discountPrice = ?, expirationDate = ?, image = ? 
