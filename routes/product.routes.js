@@ -29,12 +29,10 @@ router.get('/dashboard/product/new', (req, res) => {
 // Market dashboard - create new product
 router.post('/dashboard/product/new', upload.single('image'), createProduct);
 
-
-
 // Market dashboard - form to edit existing product - render edit-product page with product details
 router.get('/dashboard/product/:id/edit',  async (req, res) => {
   // GET /dashboard/product/:id/edit - form to edit existing product
-  const { id }= req.params;
+  const { id } = req.params;
   //console.log(id);
   const product = await getProduct(id);
   res.render("productEdit", { product: product, user: req.session.user })

@@ -71,27 +71,27 @@
 
                     <div class="detail-pricing" style="width: 800px; display: inline-block;">
                         <div class="input-field">
-                            <input style="border: 1px solid var(--green-dark);" type="text" name="name" value="" placeholder=" ">
+                            <input class="input-border" type="text" name="name" value="" placeholder=" ">
                             <span class="input-info placeholder" style="opacity: 0.8 ;"><%= product.name %> (Name)</span>
                             <span class="input-change-line placeholder"></span>
                         </div>
                         <div class="input-field">
-                            <input style="border: 1px solid var(--green-dark);" type="text" name="basePrice" value="" placeholder=" ">
+                            <input class="input-border" type="text" name="basePrice" value="" placeholder=" ">
                             <span class="input-info placeholder" style="opacity: 0.8 ;"><%= product.basePrice %> (Price)</span>
                             <span class="input-change-line placeholder"></span>
                         </div>
                         <div class="input-field">
-                            <input style="border: 1px solid var(--green-dark);" type="text" name="discountPrice" value="" placeholder=" ">
+                            <input class="input-border" type="text" name="discountPrice" value="" placeholder=" ">
                             <span class="input-info placeholder" style="opacity: 0.8 ;"><%= product.discountPrice %> (Discounted Price)</span>
                             <span class="input-change-line placeholder"></span>
                         </div>
                          <div class="input-field">
-                            <input style="border: 1px solid var(--green-dark);" type="text" name="stock" value="" placeholder=" ">
+                            <input class="input-border" type="text" name="stock" value="" placeholder=" ">
                             <span class="input-info placeholder" style="opacity: 0.8 ;"><%= product.stock %> (Stock)</span>
                             <span class="input-change-line placeholder"></span>
                         </div>
                          <div class="input-field">
-                            <input style=" border: 1px solid var(--green-dark);" type="date" name="expirationDate" value="<%= product.expirationDate.toISOString().split('T')[0] %>" placeholder=" ">
+                            <input class="input-border" type="date" name="expirationDate" value="<%= product.expirationDate.toISOString().split('T')[0] %>" placeholder=" ">
                             <span class="input-info placeholder" style="opacity: 0.8 ;">Expiry Date</span>
                         </div>
                     </div>
