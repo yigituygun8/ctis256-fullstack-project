@@ -50,14 +50,35 @@ export const getProductDetails = async (req, res) => {
 // List the products according to the markets
 export const getMarketDashboard = async (req, res) => {
     try {
-        const marketID = req.session.userId; // marketID comes from session
+        const marketID = req.session.userId; 
+        
+        // If there is no user in the session, return login page.
+        if (!marketID) {
+            return res.redirect('/login');
+        }
+
+        // Take all products according to market ascendignly
         const sql = `SELECT * FROM product WHERE marketID = ? ORDER BY expirationDate ASC`;
         const [rows] = await pool.query(sql, [marketID]);
-        
-        // Show only not expired products
-        res.render('dashboard', { products: rows, user: req.session.user });
+
+        // Creating "today" for ejs
+        const today = new Date();
+
+        // Clear status which comes from session
+        const status = req.session.status || null;
+        delete req.session.status;
+
+        // Sending datas to dashboard
+        res.render('dashboard', { 
+            products: rows, 
+            activeUser: req.session.user, 
+            today: today,
+            status: status,
+            user_type: 'market'
+        });
     } catch (error) {
-        res.status(500).send("Error while getting market products" + error);
+        console.error("Dashboard Error:", error);
+        res.status(500).send("Error while loading market information.");
     }
 };
 
@@ -121,11 +142,18 @@ export const deleteProduct = async (req, res) => {
         const marketID = req.session.userId;
 
         const sql = "DELETE FROM product WHERE itemID = ? AND marketID = ?";
-        await pool.query(sql, [id, marketID]);
+        const [result] = await pool.query(sql, [id, marketID]);
+
+        if (result.affectedRows > 0) {
+            req.session.status = { isSuccess: true, msg: "Product deleted successfully." };
+        } else {
+            req.session.status = { isSuccess: false, msg: "Product could not found." };
+        }
         
         res.redirect('/dashboard');
     } catch (error) {
-        res.status(500).send("Product could not be deleted" + error);
+        req.session.status = { isSuccess: false, msg: "Error while deleting the product." };
+        res.redirect('/dashboard');
     }
 };
 

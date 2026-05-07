@@ -1136,6 +1136,18 @@ a.page-btn:hover { background: var(--green-pale); }
   align-items: center;
 }
 
+.toast-success {
+    background-color: var(--green-mid);
+    color: white;
+    pointer-events: auto;
+}
+
+.toast-error {
+    background-color: #e53e3e;
+    color: white;
+    pointer-events: auto;
+}
+
 @keyframes slideIn {
   from { transform: translateX(100%); opacity: 0; }
   to { transform: translateX(0); opacity: 1; }
@@ -1150,4 +1162,99 @@ a.page-btn:hover { background: var(--green-pale); }
   .profile-layout { flex-direction: column; }
   .profile-card { width: 100%; }
   .form-row { flex-direction: column; }
+}
+
+/* DASHBOARD SPECIFIC STYLES */
+
+.dashboard-section {
+  padding: 40px 0;
+  background: var(--cream);
+}
+
+.dashboard-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 8px;
+  margin-top: 20px;
+}
+
+.dashboard-table th {
+  background: var(--green-dark);
+  color: var(--white);
+  padding: 16px;
+  text-align: left;
+  font-weight: 600;
+}
+
+.dashboard-table th:first-child { border-radius: 10px 0 0 0; }
+.dashboard-table th:last-child { border-radius: 0 10px 0 0; }
+
+.dashboard-table td {
+  background: var(--white);
+  padding: 16px;
+  color: var(--text-mid);
+  border-top: 1px solid #eee;
+  border-bottom: 1px solid #eee;
+}
+
+.dashboard-table td:first-child { border-left: 1px solid #eee; border-radius: 8px 0 0 8px; }
+.dashboard-table td:last-child { border-right: 1px solid #eee; border-radius: 0 8px 8px 0; }
+
+.row-expired td {
+  background: #fff5f5;
+  border-color: #feb2b2;
+}
+
+.badge-expired {
+  background: #f56565;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.badge-active {
+  background: var(--green-light);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: bold;
+}
+
+.btn-edit {
+  color: var(--green-mid);
+  font-weight: 600;
+  margin-right: 12px;
+  transition: color 0.2s;
+}
+.btn-edit:hover { color: var(--green-dark); }
+
+.btn-delete-trigger {
+  background: none;
+  border: none;
+  color: #e53e3e;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+}
+.btn-delete-trigger:hover { text-decoration: underline; }
+
+.dashboard-section {
+  flex: 1;
+}
+
+.product-img-thumbnail {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid var(--green-pale);
+    background-color: var(--white);
+}
+
+.dashboard-table td {
+    vertical-align: middle;
 }

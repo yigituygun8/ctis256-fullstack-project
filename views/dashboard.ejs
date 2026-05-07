@@ -3,9 +3,96 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Dashboard</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-    
+    <nav>
+        <div class="nav-inner">
+            <a href="/" class="nav-brand">UYGUN MARKETS</a>
+            <div class="nav-links">
+                    <form action="/logout" method="POST">
+                        <button type="submit" class="nav-logout">Log out</button>
+                    </form>
+            </div>
+        </div>
+    </nav>
+    <section class="dashboard-section">
+    <div class="container dashboard-container">
+        
+
+        <div class="dashboard-header">
+            <h1 class="dashboard-title">Market Inventory</h1>
+            <a href="/dashboard/product/new" class="btn-primary" style="text-decoration: none; margin-top: 10px;">+ Add new product</a>
+        </div>
+
+        <table class="dashboard-table">
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Product Name</th>
+                    <th>Base Price</th>
+                    <th>Discounted Price</th>
+                    <th>Expiration Date</th>
+                    <th>Status</th>
+                    <th>Edit / Delete</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% if (locals.products && products.length > 0) { %>
+                    <% products.forEach(product => { %>
+                        <% 
+                            const expDate = new Date(product.expirationDate);
+                            const isExpired = expDate < today; 
+                        %>
+                        <tr class="<%= isExpired ? 'row-expired' : '' %>">
+                            <td><img src="/images/<%=product.image%>" alt="<%= product.name %>" class="product-img-thumbnail"></td>
+                            <td><strong><%= product.name %></strong></td>
+                            <td><%= product.basePrice %> TL</td>
+                            <td><%= product.discountPrice %> TL</td>
+                            <td><%= expDate.toLocaleDateString('tr-TR') %></td>
+                            <td>
+                                <% if (isExpired) { %>
+                                    <span class="badge-expired">Expired</span>
+                                <% } else { %>
+                                    <span class="badge-active">Active</span>
+                                <% } %>
+                            </td>
+                            <td>
+                                <div class="action-group" style="display: flex; gap: 15px; align-items: center;">
+                                    <a href="/dashboard/product/<%= product.itemID %>/edit" class="btn-edit" style="text-decoration: none; color: var(--green-mid); font-weight: 600;">Edit</a>
+                                    
+                                    <form action="/dashboard/product/<%= product.itemID %>/delete" method="POST" 
+                                          onsubmit="return confirm('<%= product.productName %> Are you sure you want to delete the product?')">
+                                        <button type="submit" class="btn-delete-trigger">Delete</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    <% }) %>
+                <% } else { %>
+                    <tr>
+                        <td colspan="5" style="text-align: center; padding: 40px; color: var(--text-soft);">
+                            No products have been added yet.
+                        </td>
+                    </tr>
+                <% } %>
+            </tbody>
+        </table>
+
+        
+        <% if (locals.status && status) { %>
+        <div class="toast-container">
+            <div class="toast <%= status.isSuccess ? 'toast-success' : 'toast-error' %>">
+                <span style="font-weight: 600;"><%= status.msg %></span>
+            </div>
+        </div>
+        <% } %>
+    </div>
+</section>
 </body>
 </html>
