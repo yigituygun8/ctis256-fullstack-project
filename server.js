@@ -8,20 +8,22 @@ import productRoutes from "./routes/product.routes.js";
 import cartRoutes from "./routes/cart.routes.js";
 import userRoutes from "./routes/user.routes.js"
 
-
 const app = express()
-app.set('view engine', 'ejs')
-app.use(express.static('public'))
-app.use(express.urlencoded({extended: true}))
+app.set('view engine', 'ejs') // Set EJS as the templating engine
+app.use(express.static('public')) // For serving static files like CSS, JS, images from the "public" directory
+app.use(express.urlencoded({extended: true})) // For parsing application/x-www-form-urlencoded (form data)
+app.use(express.json()) // For parsing application/json
 app.use(session({
-    secret: process.env.SESSION_SECRET || "default_secret",
+    secret: process.env.SESSION_SECRET,
     resave: false, // Don't save session if unmodified
     saveUninitialized: false, // Don't create session until something stored / modified
-}))
+})); // Session configuration
 
 // Home endpoint
 app.get('/', (req, res) => {
-  res.render('index', { user: req.session.user || null });
+  const status = req.session.status;
+  delete req.session.status;
+  res.render('index', { user: req.session.user || null, status });
 });
 
 // Mount route handlers at their base paths
@@ -29,6 +31,8 @@ app.use('/', authRoutes);        // /login, /register, /verify-email, /logout
 app.use('/', productRoutes);     // /products, /product/:id, /dashboard, /dashboard/product/*
 app.use('/cart', cartRoutes);    // /cart, /cart/add, /cart/update, /cart/remove, /cart/purchase
 app.use('/', userRoutes);        // /profile, /profile/edit, /dashboard/profile, /dashboard/profile/edit
-
+app.use((req, res) => {
+  res.redirect('/'); // Redirect any unknown routes to home page
+});
 
 app.listen(3000, () => console.log("App is running on http://localhost:3000"))

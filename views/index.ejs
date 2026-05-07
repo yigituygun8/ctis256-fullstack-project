@@ -1,17 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Uygun Markets</title>
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap"
+    rel="stylesheet">
   <link rel="stylesheet" href="/css/style.css">
 </head>
+
 <body id="top">
 
+  <% if(status) { %>
+    <div class="toast-container">
+      <div class="toast <%= status.isSuccess ? 'flash-ok' : 'flash-err' %>  ">
+        <span">
+          <%= status.msg %></span>
+      </div>
+    </div>
+  <% } %>
   <!-- NAV -->
   <nav>
     <div class="nav-inner">
@@ -19,18 +30,20 @@
       <div class="nav-links">
         <a href="/products">Browse Deals</a>
         <% if (user) { %>
-          <% if (user.type === 'market') { %>
-            <a href="/dashboard">Dashboard</a>
-          <% } else { %>
-            <a href="/cart">Cart</a>
-          <% } %>
-          <form action="/logout" method="POST">
-            <button type="submit" class="nav-logout">Log out</button>
-          </form>
-        <% } else { %>
-          <a href="/login">Log in</a>
-          <a href="/register" class="btn-primary">Get Started</a>
-        <% } %>
+          <% if (user.type==='market' ) { %>
+            <a class="btn-primary" href="/dashboard">Dashboard</a>
+            <a href="/dashboard/profile" class="btn-primary">Market Profile</a>
+            <% } else { %>
+              <a class="btn-primary" href="/cart">Cart</a>
+              <a href="/profile" class="btn-primary">Profile</a>
+              <% } %>
+                <form action="/logout" method="POST">
+                  <button type="submit" class="nav-logout">Log out</button>
+                </form>
+                <% } else { %>
+                  <a href="/login">Log in</a>
+                  <a href="/register" class="btn-primary">Get Started</a>
+                  <% } %>
       </div>
     </div>
   </nav>
@@ -48,11 +61,11 @@
         <a href="/products" class="btn-primary">Find deals near me</a>
         <% if (!user) { %>
           <a href="/register" class="btn-secondary">List your market</a>
-        <% } %>
+          <% } %>
       </div>
     </div>
     <div class="hero-image">
-      <img src="/images/UYGUN_MARKETS_LOGO.png" alt="Uygun Markets logo"/>
+      <img src="/images/UYGUN_MARKETS_LOGO.png" alt="Uygun Markets logo" />
     </div>
   </section>
 
@@ -136,7 +149,7 @@
         <div class="feat-card">
           <div class="feat-icon">🛒</div>
           <h3>Persistent cart</h3>
-          <p>Your cart is saved to your account and stays between sessions.</p>
+          <p>Your cart is saved to your account and you can continue shopping later.</p>
         </div>
         <div class="feat-card">
           <div class="feat-icon">✉️</div>
@@ -170,18 +183,8 @@
     </div>
   </section>
 
-  <!-- FOOTER -->
-  <footer>
-    <div class="footer-inner">
-      <p class="footer-brand">UYGUN MARKETS</p>
-      <p class="footer-copy">© 2026 · Better Prices, Less Waste, Better Tomorrow 🌱</p>
-      <div class="footer-links">
-        <a href="/products">Browse</a>
-        <a href="/login">Log In</a>
-        <a href="/register">Sign Up</a>
-      </div>
-    </div>
-  </footer>
+  <%- include('partials/_footer') %>
 
 </body>
+
 </html>

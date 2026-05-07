@@ -28,12 +28,14 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `Consumer` (
-  `consumerID` int NOT NULL,
+  `consumerID` int NOT NULL AUTO_INCREMENT,
   `email` varchar(30) NOT NULL,
   `customerName` varchar(30) NOT NULL,
   `password` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `city` varchar(30) NOT NULL,
-  `district` varchar(30) NOT NULL
+  `district` varchar(30) NOT NULL,
+  PRIMARY KEY (`consumerID`),
+  UNIQUE KEY `email` (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
@@ -43,12 +45,14 @@ CREATE TABLE `Consumer` (
 --
 
 CREATE TABLE `Market` (
-  `marketID` int NOT NULL,
+  `marketID` int NOT NULL AUTO_INCREMENT,
   `marketName` varchar(30) NOT NULL,
   `email` varchar(50) NOT NULL,
   `password` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `city` varchar(30) NOT NULL,
-  `district` varchar(30) NOT NULL
+  `district` varchar(30) NOT NULL,
+  PRIMARY KEY (`marketID`),
+  UNIQUE KEY `email` (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
@@ -71,14 +75,15 @@ CREATE TABLE `ShoppingCart` (
 --
 
 CREATE TABLE `product` (
+  `itemID` int NOT NULL AUTO_INCREMENT,
   `marketID` int NOT NULL,
-  `itemID` int NOT NULL,
   `name` varchar(30) NOT NULL,
   `expirationDate` date NOT NULL,
   `image` text,
   `basePrice` float NOT NULL,
   `discountPrice` float NOT NULL,
-  `stock` int NOT NULL
+  `stock` int NOT NULL,
+  PRIMARY KEY (`itemID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
@@ -137,28 +142,30 @@ INSERT INTO `product` (`marketID`, `itemID`, `name`, `expirationDate`, `image`, 
 (205, 5017, 'Cake Slice', '2026-05-22', 'cake.jpg', 28.00, 21.90, 14),
 (317, 5018, 'Egg Carton', '2026-05-25', 'egg.jpg', 32.00, 24.90, 22),
 (578, 5019, 'Nutmeg Spice', '2026-06-01', 'nutmegspice.jpg', 18.00, 13.50, 40),
-(689, 5020, 'Toblerone Bar', '2026-05-29', 'toblerone.jpg', 75.00, 59.90, 11);
+(689, 5020, 'Toblerone Bar', '2026-05-29', 'toblerone.jpg', 75.00, 59.90, 11),
+
+(101, 5021, 'Strawberry Milk', '2026-05-14', 'strawberrymilk.jpg', 50, 37.5, 15),
+(101, 5022, 'Cream Cheese', '2026-05-10', 'creamcheese.jpg', 65, 48.9, 10),
+
+(205, 5023, 'Chocolate Mini Cake', '2026-05-23', 'chocominicake.jpg', 32, 24.5, 12),
+(205, 5024, 'Green Apple Pack', '2026-05-17', 'greenapple.jpg', 27, 20.5, 28),
+
+(442, 5027, 'Mozzarella Cheese', '2026-05-09', 'mozzarella.jpg', 110, 82.5, 14),
+(442, 5028, 'Chocolate Ice Cream', '2026-05-01', 'chocoicecream.jpg', 36, 28.0, 9),
+
+(578, 5029, 'Cinnamon Spice', '2026-06-03', 'cinnamon.jpg', 20, 15.0, 35),
+(578, 5030, 'Fruit Yogurt Mix', '2026-05-21', 'fruityogurt.jpg', 42, 31.5, 19),
+
+(689, 5031, 'Apple Juice', '2026-05-22', 'applejuice.jpg', 58, 43.5, 17),
+(689, 5032, 'Dark Chocolate Bar', '2026-05-30', 'darkchocolate.jpg', 80, 62.0, 13),
+
+(101, 5033, 'Whole Wheat Bread', '2026-05-11', 'wheatbread.jpg', 22, 16.5, 20),
+(317, 5035, 'Sausage Pack', '2026-05-13', 'sausage.jpg', 70, 52.5, 14),
+
+(442, 5036, 'Parmesan Cheese', '2026-05-08', 'parmesan.jpg', 130, 97.5, 11),
+(689, 5037, 'Peach Juice', '2026-05-24', 'peachjuice.jpg', 55, 41.0, 18);
 
 -- --------------------------------------------------------
-
---
--- Indexes for dumped tables
---
-
---
--- Indexes for table `Consumer`
---
-ALTER TABLE `Consumer`
-  ADD PRIMARY KEY (`consumerID`),
-  ADD UNIQUE KEY `email` (`email`);
-
---
--- Indexes for table `Market`
---
-ALTER TABLE `Market`
-  ADD PRIMARY KEY (`marketID`),
-  ADD UNIQUE KEY `email` (`email`);
-
 --
 -- Indexes for table `ShoppingCart`
 --
@@ -171,7 +178,9 @@ ALTER TABLE `ShoppingCart`
 -- Indexes for table `product`
 --
 ALTER TABLE `product`
-  ADD PRIMARY KEY (`marketID`,`itemID`);
+  ADD KEY `marketID` (`marketID`);
+
+ALTER TABLE `product` AUTO_INCREMENT = 5038;
 
 COMMIT;
 

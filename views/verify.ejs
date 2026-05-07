@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+    <form action="/verify-email" method="post">
+        <div class="container auth-field">
+            <span>Please enter the 6-digit code sent to you via e-mail</span>
+            <div class="input-field">
+                <input type="text" name="code" value="<%= form.code %>" placeholder=" ">
+                <span class="input-info">Code</span>
+                <% if(errors.code) { %>
+                    <span class="input-error"><%= errors.code.msg %></span>
+                <% } %>
+            </div>
+            <button class="btn-primary">V E R I F Y</button>
+        </div>
+    </form>
+
+</body>
+</html>

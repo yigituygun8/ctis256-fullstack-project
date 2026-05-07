@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Product - Uygun Markets</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <!-- NAV -->
+    <nav>
+        <div class="nav-inner">
+            <a href="/" class="nav-brand">UYGUN MARKETS</a>
+            <div class="nav-links">
+                <a href="/products">Browse Deals</a>
+                <% if (user) { %>
+                    <% if (user.type === 'market') { %>
+                        <a href="/dashboard" class="btn-primary">Dashboard</a>
+                    <% } else { %>
+                        <a href="/cart" class="btn-primary">Cart</a>
+                    <% } %>
+                    <form action="/logout" method="POST">
+                        <button type="submit" class="nav-logout">Log out</button>
+                    </form>
+                <% } else { %>
+                    <a href="/login">Log in</a>
+                    <a href="/register" class="btn-primary">Get Started</a>
+                <% } %>
+            </div>
+        </div>
+    </nav>
+
+    <!-- CREATE PRODUCT -->
+    <main class="page-main">
+        <div class="container">
+            <a href="/dashboard" class="back-link">← Back to dashboard</a>
+
+            <form class="detail-layout" method="POST" action="/dashboard/product/new" enctype="multipart/form-data">
+                <!-- IMAGE -->
+                <div class="detail-image-wrap">
+                    <img id="image-preview" src="/images/placeholder.png" alt="Product preview" class="detail-image" />
+                    <label for="image" class="btn-secondary" style="display:block; margin-top: 12px; text-align: center; cursor: pointer;">Upload Image</label>
+                    <input type="file" id="image" name="image" accept="image/*" required style="display: none;"
+                        onchange="document.getElementById('image-preview').src = window.URL.createObjectURL(this.files[0])">
+                </div>
+
+                <!-- INFO -->
+                <div class="detail-info">
+                    <div class="detail-pricing" style="width: 800px;">
+                        <div class="input-field">
+                            <input class="input-border" type="text" name="name" value="" placeholder=" " required>
+                            <span class="input-info placeholder" style="opacity: 0.8;">Product Name</span>
+                        </div>
+                        <div class="input-field">
+                            <input class="input-border" type="number" name="basePrice" step="0.01" value="" placeholder=" " required>
+                            <span class="input-info placeholder" style="opacity: 0.8;">Base Price</span>
+                        </div>
+                        <div class="input-field">
+                            <input class="input-border" type="number" name="discountPrice" step="0.01" value="" placeholder=" " required>
+                            <span class="input-info placeholder" style="opacity: 0.8;">Discounted Price</span>
+                        </div>
+                        <div class="input-field">
+                            <input class="input-border" type="text" name="district" value="" placeholder=" " required>
+                            <span class="input-info placeholder" style="opacity: 0.8;">District</span>
+                        </div>
+                        <div class="input-field">
+                            <input class="input-border" type="text" name="city" value="" placeholder=" " required>
+                            <span class="input-info placeholder" style="opacity: 0.8;">City</span>
+                        </div>
+                        <div class="input-field">
+                            <input class="input-border" type="number" name="stock" min="1" value="" placeholder=" " required>
+                            <span class="input-info placeholder" style="opacity: 0.8;">Stock</span>
+                        </div>
+                        <div class="input-field">
+                            <input class="input-border" type="date" name="expirationDate" value="" placeholder=" " required>
+                            <span class="input-info placeholder" style="opacity: 0.8;">Expiry Date</span>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-primary" style="margin-bottom: 20px; max-width: 450px;">Add Product</button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <%- include('partials/_footer') %>
+</body>
+</html>
