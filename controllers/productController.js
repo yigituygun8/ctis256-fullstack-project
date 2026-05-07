@@ -86,7 +86,7 @@ export const getMarketDashboard = async (req, res) => {
 export const createProduct = async (req, res) => {
     try {
         const { name, stock, basePrice, discountPrice, expirationDate } = req.body;
-        const image = req.file ? `/public/images/${req.file.filename}` : null; // Store the relative path to the uploaded image
+        const image = req.file ? `${req.file.filename}` : null; // Store the relative path to the uploaded image
         const marketID = req.session.userId;
 
         const sql = `INSERT INTO product (marketID, name, stock, basePrice, discountPrice, expirationDate, image) 
