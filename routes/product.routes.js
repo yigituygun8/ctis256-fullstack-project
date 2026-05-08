@@ -4,6 +4,7 @@ import { pool } from "../config/dbpool.js";
 import upload from "../config/multer.js";
 import { getAllProducts, getProductDetails, searchProducts, getMarketDashboard, getProduct, createProduct, updateProduct, deleteProduct } from "../controllers/productController.js";
 import { requireMarket, requireProductOwnership } from "../middlewares/auth.middleware.js";
+import { formatDateForInput } from "../utils/formatDate.js";
 
 // Get all products from any market (public)
 router.get('/products', getAllProducts);
@@ -35,7 +36,7 @@ router.get('/dashboard/product/:id/edit', requireProductOwnership, async (req, r
   
   try {
     const product = await getProduct(id);
-    res.render("productEdit", { product: product, user: req.session.user });
+    res.render("productEdit", { product: product, user: req.session.user, formatDateForInput: formatDateForInput });
   } catch (error) {
     res.status(500).send("Error retrieving product");
   }

@@ -92,7 +92,7 @@
                             <span class="input-change-line placeholder"></span>
                         </div>
                          <div class="input-field">
-                            <input class="input-border" type="date" name="expirationDate" value="<%= product.expirationDate.toISOString().split('T')[0] %>" placeholder=" ">
+                            <input class="input-border" type="date" name="expirationDate" value="<%= formatDateForInput(expDate) %>" placeholder=" ">
                             <span class="input-info placeholder" style="opacity: 0.8 ;">Expiry Date</span>
                         </div>
                     </div>

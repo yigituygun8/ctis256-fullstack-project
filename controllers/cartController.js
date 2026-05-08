@@ -10,7 +10,7 @@ export const getCartData = async (req, res) => {
         }
 
         const sql = `
-            SELECT c.*, p.name, p.discountPrice, p.image, (c.quantity * p.discountPrice) as itemTotal
+            SELECT c.*, p.name, p.discountPrice, p.image, p.stock, (c.quantity * p.discountPrice) as itemTotal
             FROM ShoppingCart c
             JOIN product p ON c.itemID = p.itemID
             WHERE c.consumerID = ?`;
@@ -40,12 +40,39 @@ export const addToCart = async (req, res) => {
             return res.status(401).json({ success: false, error: "Please log in to add items to the cart." });
         }
 
+        const [productRows] = await pool.query("SELECT stock FROM product WHERE itemID = ?", [itemID]);
+        if (productRows.length === 0) {
+            return res.status(400).json({ success: false, error: "Product not found." });
+        }
+        const stock = productRows[0].stock;
+        const q = parseInt(quantity) || 1;
+
+        if (q <= 0) {
+            return res.status(400).json({ success: false, error: "Quantity must be at least 1." });
+        }
+
+        if (stock <= 0) {
+            return res.status(400).json({ success: false, error: "This product is out of stock." });
+        }
+        if (q > stock) {
+            return res.status(400).json({ success: false, error: `Only ${stock} items are available in stock.` });
+        }
+
+        // Check current cart quantity for this item
+        const [cartRows] = await pool.query("SELECT quantity FROM ShoppingCart WHERE itemID = ? AND consumerID = ?", [itemID, consumerID]);
+        const currentQty = cartRows.length > 0 ? cartRows[0].quantity : 0;
+        const totalQty = currentQty + q;
+
+        if (totalQty > stock) {
+            return res.status(400).json({ success: false, error: `Only ${stock - currentQty} more items available. You already have ${currentQty} in cart.` });
+        }
+
         const sql = `
             INSERT INTO ShoppingCart (itemID, marketID, consumerID, quantity) 
             VALUES (?, ?, ?, ?) 
             ON DUPLICATE KEY UPDATE quantity = quantity + ?`;
         
-        await pool.query(sql, [itemID, marketID, consumerID, quantity, quantity]);
+        await pool.query(sql, [itemID, marketID, consumerID, q, q]);
         
         
         res.status(200).json({ success: true, message: "Product has added to the cart." });
@@ -63,10 +90,25 @@ export const updateQuantity = async (req, res) => {
             return res.status(401).json({ success: false, error: "Please log in to update the cart." });
         }
 
-        const sql = "UPDATE ShoppingCart SET quantity = ? WHERE itemID = ? AND consumerID = ?";
-        await pool.query(sql, [quantity, itemID, consumerID]);
+        // Validate against current stock
+        const [rows] = await pool.query("SELECT stock FROM product WHERE itemID = ?", [itemID]);
+        if (!rows || rows.length === 0) {
+            return res.status(400).json({ success: false, error: "Product not found." });
+        }
+        const stock = rows[0].stock;
+        const q = parseInt(quantity) || 1;
 
-        res.status(200).json({ success: true, message: "Quantity updated." });
+        if (stock <= 0) {
+            // Remove from cart if out of stock
+            await pool.query("DELETE FROM ShoppingCart WHERE itemID = ? AND consumerID = ?", [itemID, consumerID]);
+            return res.status(200).json({ success: false, error: "This product is no longer available (out of stock).", removed: true });
+        }
+
+        const newQty = Math.max(1, Math.min(q, stock));
+        const sql = "UPDATE ShoppingCart SET quantity = ? WHERE itemID = ? AND consumerID = ?";
+        await pool.query(sql, [newQty, itemID, consumerID]);
+
+        res.status(200).json({ success: true, message: "Quantity updated.", quantity: newQty });
     } catch (error) {
         res.status(500).json({ success: false, error: "Could not update quantity." });
     }

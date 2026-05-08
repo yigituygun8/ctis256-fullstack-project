@@ -49,7 +49,9 @@
                     <% products.forEach(product => { %>
                         <% 
                             const expDate = new Date(product.expirationDate);
-                            const isExpired = expDate < today; 
+                            const today = new Date();
+                            today.setHours(0,0,0,0);
+                            const isExpired = expDate < today;
                         %>
                         <tr class="<%= isExpired ? 'row-expired' : '' %>">
                             <td><img src="/images/<%=product.image%>" alt="<%= product.name %>" class="product-img-thumbnail"></td>
@@ -61,6 +63,8 @@
                             <td>
                                 <% if (isExpired) { %>
                                     <span class="badge-expired">Expired</span>
+                                <% } else if (product.stock <= 0) { %>
+                                    <span class="badge-expired">Out of Stock</span>
                                 <% } else { %>
                                     <span class="badge-active">Active</span>
                                 <% } %>

@@ -3,10 +3,10 @@ import { pool } from "../config/dbpool.js";
 // List all products with market information
 export const getAllProducts = async (req, res) => {
     try {
-        // Show only not expired products
+        // Show only not expired products with stock > 0
         const sql = `SELECT p.*, m.marketName FROM product p 
                      JOIN Market m ON p.marketID = m.marketID 
-                     WHERE p.expirationDate >= CURDATE()`;
+                     WHERE p.expirationDate >= CURDATE() AND p.stock > 0`;
         const [rows] = await pool.query(sql);
         res.render('products', { products: rows, user: req.session.user});
     } catch (error) {
@@ -181,13 +181,14 @@ export const searchProducts = async (req, res) => {
 
         const { city: userCity, district: userDistrict } = userData[0];
 
-        // Search the products which are in user's city and district
+        // Search the products which are in user's city and district, excluding out of stock
         const productSql = `
             SELECT p.*, m.marketName, m.district as marketDistrict
             FROM product p
             JOIN Market m ON p.marketID = m.marketID
             WHERE p.name LIKE ? 
             AND p.expirationDate >= CURDATE()
+            AND p.stock > 0
             AND m.city = ?
             ORDER BY (m.district = ?) DESC, p.expirationDate ASC
             LIMIT ? OFFSET ?

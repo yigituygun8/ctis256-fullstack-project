@@ -206,11 +206,12 @@
                 <p class="cart-item-price">₺${item.discountPrice}</p>
             </div>
             <input
-                type="number"
-                value="${item.quantity}"
-                min="1"
-                class="cart-qty-input"
-                onchange="updateQuantity(${item.itemID}, this.value)" 
+              type="number"
+              value="${item.quantity}"
+              min="1"
+              max="${item.stock}"
+              class="cart-qty-input"
+              onchange="const val = parseInt(this.value); const minVal = parseInt(this.min); const maxVal = parseInt(this.max); if(val > maxVal) this.value = maxVal; if(val < minVal) this.value = minVal; updateQuantity(${item.itemID}, this.value)" 
             />
             <button class="cart-remove-btn" onclick="removeFromCart(${item.itemID})">✕</button>
         </div>
@@ -246,7 +247,11 @@
         body: JSON.stringify({ itemID, quantity: parseInt(quantity) })
         });
         const data = await res.json();
-        if (data.success) loadCart();
+  
+      loadCart();
+      if (!data.success && data.error) {
+        alert("Could not update quantity: " + data.error);
+      }
     }
 
     async function removeFromCart(itemID) {
@@ -257,6 +262,7 @@
       });
       const data = await res.json();
       if (data.success) loadCart();
+      else alert("Could not remove item from cart: " + data.error);
     }
 
     async function completePurchase() {
@@ -267,7 +273,7 @@
         loadCart();
         alert('Purchase completed!');
       } else {
-        alert('Something went wrong. Please try again.');
+        alert("Could not complete purchase: " + data.error);
       }
     }
 

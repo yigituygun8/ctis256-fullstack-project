@@ -94,8 +94,8 @@
      
              <% if (user && user.type === 'consumer') { %>
                <div class="detail-add-row">
-                 <input type="number" id="qty-input" value="1" min="1" max="<%= product.stock %>" class="qty-input" />
-                 <button class="btn-primary" onclick="addToCart()">Add to Cart</button>
+                 <input type="number" id="qty-input" value="1" min="1" max="<%= product.stock %>" class="qty-input" <%= product.stock === 0 ? 'disabled' : '' %> />
+                 <button class="btn-primary" onclick="addToCart()" <%= product.stock === 0 ? 'disabled' : '' %>><%= product.stock === 0 ? 'Out of Stock' : 'Add to Cart' %></button>
                </div>
                <p id="add-feedback" class="add-feedback"></p>
              <% } else if (!user) { %>
@@ -112,8 +112,16 @@
   <% if (user && user.type === 'consumer') { %>
   <script>
     async function addToCart() {
-      const qty = parseInt(document.getElementById('qty-input').value) || 1;
+      const qtyInput = document.getElementById('qty-input');
+      const maxStock = parseInt(qtyInput.max, 10) || 1;
+      const qty = parseInt(qtyInput.value, 10) || 1;
       const feedback = document.getElementById('add-feedback');
+
+      if (qty < 1 || qty > maxStock) {
+        feedback.textContent = `Please choose a quantity between 1 and ${maxStock}.`;
+        feedback.className = 'add-feedback feedback-err';
+        return;
+      }
 
       const res = await fetch('/cart/add', {
         method: 'POST',
@@ -126,7 +134,7 @@
       });
 
       const data = await res.json();
-      feedback.textContent = data.success ? 'Added to cart!' : 'Could not add to cart.';
+      feedback.textContent = data.success ? 'Added to cart!' : (data.error || 'Could not add to cart.');
       feedback.className = 'add-feedback ' + (data.success ? 'feedback-ok' : 'feedback-err');
       setTimeout(() => { feedback.textContent = ''; }, 3000);
     }
