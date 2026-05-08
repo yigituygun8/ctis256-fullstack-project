@@ -2,6 +2,12 @@
 
 A full-stack web application for markets built for CTIS 256.
 
+## Team Members
+- Osman Yiğit Uygun
+- Arda Planalı
+- Gökşin Özdinç
+- Artun Konyalı
+
 ## Tech Stack
 
 - Frontend: HTML, CSS, Vanilla JavaScript
@@ -37,7 +43,7 @@ or product name and view nearby markets offering discounted items. They can also
 remain until a product’s expiration date.
 
 
-## INITIAL ENDPOINT DESIGNS:
+## ENDPOINT DESIGNS:
 
 - **_PUBLIC ENDPOINTS_**:
 	- GET  /
@@ -52,18 +58,20 @@ remain until a product’s expiration date.
 	- GET  /product/:id - `details of a specific product`
 
 - **_CONSUMER ENDPOINTS_**:
-	- GET  /cart - `view shopping cart contents`
+	- GET  /products - `view products and shopping cart contents`
+	- GET /product/:id - `view product details and add to cart option`
 	- POST /cart/add - `add product to cart`
 	- POST /cart/update - `update product quantity in cart`
 	- POST /cart/remove - `remove product from cart`
 	- POST /cart/purchase - `complete purchase`
+	- GET /search - `search products by keyword`
 	- GET  /profile - `customer profile page`
 	- POST /profile/edit - `update customer profile`
 
 - **_MARKET ENDPOINTS_**:
 	- GET  /dashboard - `market overview and products list`
-	- GET  /dashboard/product/:id/new - `form to add new product`
-	- POST /dashboard/product - `create new product`
+	- GET  /dashboard/product/new - `form to add new product`
+	- POST /dashboard/product/new - `create new product`
 	- GET  /dashboard/product/:id/edit - `form to edit existing product`
 	- POST /dashboard/product/:id/edit - `update existing product`
 	- POST /dashboard/product/:id/delete - `delete existing product`
