@@ -35,6 +35,7 @@ router.get('/register', (req, res) => {
 // Handle registration - validate input and then create the user with registerEmail controller
 router.post('/register', 
   body("email").notEmpty().withMessage("*This field must be filled"),
+  body("email").isEmail().withMessage("*This is not a valid email"),
   body("password").notEmpty().withMessage("*This field must be filled"),
   body("city").notEmpty().withMessage("*This field must be filled"),
   body("district").notEmpty().withMessage("*This field must be filled"),

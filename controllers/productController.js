@@ -33,6 +33,8 @@ export const getProduct = async (id) => {
 export const getProductDetails = async (req, res) => {
     try {
         const { id } = req.params;
+        const keyword = req.session.keyword || ""; // Get the keyword from session for pagination
+        const currentPage = req.session.currentPage || 1; // Get the current page from session for pagination
         
         // Use 'await' here so the code waits for the database!
         const product = await getProduct(id);
@@ -41,7 +43,7 @@ export const getProductDetails = async (req, res) => {
             return res.status(404).send("Product not found");
         }
 
-        res.render('product-details', { product: product, user: req.session.user});
+        res.render('product-details', { product: product, user: req.session.user, keyword, currentPage });
     } catch (error) {
         res.status(500).send("Internal Server Error");
     }
@@ -93,6 +95,8 @@ export const createProduct = async (req, res) => {
                      VALUES (?, ?, ?, ?, ?, ?, ?)`;
         await pool.query(sql, [marketID, name, stock, basePrice, discountPrice, expirationDate, image]);
         
+
+        req.session.status = { isSuccess: true, msg: "Product added successfuly" };
         res.redirect('/dashboard'); // After insertion, go back to the dashboard
     } catch (error) {
         res.status(500).send("Product could not be added." + error);
@@ -196,6 +200,9 @@ export const searchProducts = async (req, res) => {
             pageSize, 
             offset
         ]);
+
+        req.session.keyword = keyword; // Store the keyword in session for pagination
+        req.session.currentPage = parseInt(page); // Store the current page in session for pagination
 
         // Send findings
         res.render('products', { 

@@ -93,10 +93,10 @@ CREATE TABLE `product` (
 --
 
 INSERT INTO `Consumer` (`consumerID`, `email`, `customerName`, `password`, `city`, `district`) VALUES
-(1001, 'osman.yigitu@gmail.com', 'Osman Yiğit Uygun', 'osman123', 'Ankara', 'Bilkent'),
-(1023, 'arda.planali@gmail.com', 'Arda Planalı', 'arda123', 'Istanbul', 'Kadikoy'),
-(1107, 'artun.konyali@gmail.com', 'Artun Konyalı', 'artun123', 'Izmir', 'Bornova'),
-(1502, 'goskin.ozdinc@gmail.com', 'Gökşin Özdinç', 'goskin123', 'Bursa', 'Nilufer');
+(1001, 'osman.yigitu@gmail.com', 'Osman Yiğit Uygun', '$2a$10$cm3YsYfZa95GWgbJLWd9ielSN8ABpG7GNH5KWcBWYF8ZV1RHQrq3q', 'Ankara', 'Bilkent'),
+(1023, 'arda.planali@gmail.com', 'Arda Planalı', '$2a$10$WMPU/sI9Kf7vT1qN7Y2QguExV7RevAmUzf5Qeh.Cbqq6m67Y8wnWe', 'Istanbul', 'Kadikoy'),
+(1107, 'artun.konyali@gmail.com', 'Artun Konyalı', '$2a$10$EA3qtcy7tGkpYlc2XR2wSeQTEDxKbxyqB17N1kmLw3nJPSgN2aaJi', 'Izmir', 'Bornova'),
+(1502, 'goskin.ozdinc@gmail.com', 'Gökşin Özdinç', '$2a$10$YLK.Q2B5O4zwX1a.c2.GyeWyd/PTjMXWwqSYZJN.8ND1WkBjNDMZ2', 'Bursa', 'Nilufer');
 
 -- --------------------------------------------------------
 
@@ -105,12 +105,12 @@ INSERT INTO `Consumer` (`consumerID`, `email`, `customerName`, `password`, `city
 --
 
 INSERT INTO `Market` (`marketID`, `marketName`, `email`, `password`, `city`, `district`) VALUES
-(101, 'Tok Market', 'tokmarket@gmail.com', 'a8F#k29LmQ!', 'Ankara', 'Bilkent'),
-(205, 'FreshLife Market', 'freshlife@gmail.com', 'Zx91@pL0qRs', 'Istanbul', 'Kadikoy'),
-(317, 'Green Basket', 'greenbasket@gmail.com', '7Klm$Pq2Xy!', 'Izmir', 'Bornova'),
-(442, 'EcoMart', 'ecomart@gmail.com', 'Qw3!Rt8#YuP', 'Ankara', 'Etimesgut'),
-(578, 'NatureShop', 'natureshop@gmail.com', 'Wq2@Lm8#AsD', 'Bursa', 'Nilufer'),
-(689, 'DailyFresh', 'dailyfresh@gmail.com', '9Xc!Pq4#RtY', 'Antalya', 'Muratpasa');
+(101, 'Tok Market', 'tokmarket@gmail.com', '$2a$10$emaxO9Y0KfnNvVq3vJcAqem0uexkM.Z/TV39xm3CgpxbtH2zT1Z2O', 'Ankara', 'Bilkent'),
+(205, 'FreshLife Market', 'freshlife@gmail.com', '$2a$10$j2xFmhFesauGLVBdAZ/k.OkAu6TO32xpFqgdHlI6Ev/Nhkwuflad2', 'Istanbul', 'Kadikoy'),
+(317, 'Green Basket', 'greenbasket@gmail.com', '$2a$10$A4erQwKe5hACpXAzY83/8..aZI43yE69k4i.EyL.iXjnVvYPJyydi', 'Izmir', 'Bornova'),
+(442, 'EcoMart', 'ecomart@gmail.com', '$2a$10$yfexAcSqaosHnnq2PrlWn.tvx9P3c9np8JLlM7.IB6HfTh0DW/yje', 'Ankara', 'Etimesgut'),
+(578, 'NatureShop', 'natureshop@gmail.com', '$2a$10$Xs.fhfmZCxerUewNjwtjgO33SeZGYzwA7Ru58DnEYf4MCj7x8uUOi', 'Bursa', 'Nilufer'),
+(689, 'DailyFresh', 'dailyfresh@gmail.com', '$2a$10$UXZjn6UvtE56P878Ltr4ke2QYqghUI5Czh4FHqNVmJOl2h5P.pTUq', 'Antalya', 'Muratpasa');
 
 -- --------------------------------------------------------
 

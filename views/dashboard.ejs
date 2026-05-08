@@ -51,7 +51,7 @@
                         %>
                         <tr class="<%= isExpired ? 'row-expired' : '' %>">
                             <td><img src="/images/<%=product.image%>" alt="<%= product.name %>" class="product-img-thumbnail"></td>
-                            <td><strong><%= product.name %></strong></td>
+                            <td><a href="/dashboard/product/<%= product.itemID %>/edit"><strong><%= product.name %></strong></a></td>
                             <td><%= product.basePrice %> TL</td>
                             <td><%= product.discountPrice %> TL</td>
                             <td><%= expDate.toLocaleDateString('tr-TR') %></td>
@@ -85,10 +85,10 @@
         </table>
 
         
-        <% if (locals.status && status) { %>
+        <% if (status) { %>
         <div class="toast-container">
-            <div class="toast <%= status.isSuccess ? 'toast-success' : 'toast-error' %>">
-                <span style="font-weight: 600;"><%= status.msg %></span>
+            <div class="toast <%= status.isSuccess ? 'flash-ok' : 'flash-err' %>">
+                <span><%= status.msg %></span>
             </div>
         </div>
         <% } %>
