@@ -1,7 +1,6 @@
 import { pool } from "../config/dbpool.js";
 import bcrypt from "bcrypt";
 import { validationResult } from "express-validator";
-import { isBcryptHash } from "../utils/password.js";
 
 // Update consumer profile
 export const updateConsumerProfile = async (req, res) => {
@@ -28,9 +27,7 @@ export const updateConsumerProfile = async (req, res) => {
         const consumerID = currentUser.consumerID;
 
         // Password check
-        const isMatch = isBcryptHash(currentUser.password)
-                    ? await bcrypt.compare(currentPassword, currentUser.password)
-                    : currentPassword === currentUser.password;
+        const isMatch = await bcrypt.compare(currentPassword, currentUser.password)
         if (!isMatch) {
             req.session.status = { isSuccess: false, msg: "Password is incorrect" };
             return res.redirect(profilePath);

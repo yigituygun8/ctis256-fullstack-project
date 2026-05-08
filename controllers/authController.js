@@ -2,7 +2,6 @@ import { validationResult } from "express-validator";
 import { pool } from "../config/dbpool.js";
 import bcrypt from "bcrypt";
 import { sendVerificationCode } from "../utils/emailSender.js";
-import { isBcryptHash } from "../utils/password.js";
 
 // Register
 export const registerEmail = async (req, res) => {
@@ -109,9 +108,7 @@ export const loginUser = async (req, res) => {
                 return res.render('login', { form: req.body, errors : errors.mapped(), user_type, loginError, status: null});
             }
             
-            const passwordMatches = isBcryptHash(user.password)
-                ? await bcrypt.compare(password, user.password)
-                : password === user.password;
+            const passwordMatches = await bcrypt.compare(password, user.password);
 
             if(!passwordMatches){
                 const loginError = { field: "password", msg: "*Wrong password" }

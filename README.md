@@ -16,7 +16,7 @@ A full-stack web application for markets built for CTIS 256.
 3. Create and configure your MySQL database.
 4. Add your database credentials to your environment/config file.
 5. Start the backend server:
-	- `npm start`
+	- `npm run dev`
 6. Open the frontend in your browser.
 
 ## Problem:  

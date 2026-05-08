@@ -15,6 +15,7 @@
         <div class="nav-inner">
             <a href="/" class="nav-brand">UYGUN MARKETS</a>
             <div class="nav-links">
+                <a href="/dashboard/profile" class="btn-primary">Profile</a>
                     <form action="/logout" method="POST">
                         <button type="submit" class="nav-logout">Log out</button>
                     </form>
@@ -26,7 +27,7 @@
         
 
         <div class="dashboard-header">
-            <h1 class="dashboard-title">Market Inventory</h1>
+            <h1 class="dashboard-title">Market Inventory - <%= activeUser.marketName %></h1>
             <a href="/dashboard/product/new" class="btn-primary" style="text-decoration: none; margin-top: 10px;">+ Add new product</a>
         </div>
 
@@ -37,6 +38,7 @@
                     <th>Product Name</th>
                     <th>Base Price</th>
                     <th>Discounted Price</th>
+                    <th>Stock</th>
                     <th>Expiration Date</th>
                     <th>Status</th>
                     <th>Edit / Delete</th>
@@ -54,6 +56,7 @@
                             <td><a href="/dashboard/product/<%= product.itemID %>/edit"><strong><%= product.name %></strong></a></td>
                             <td><%= product.basePrice %> TL</td>
                             <td><%= product.discountPrice %> TL</td>
+                            <td><%= product.stock %></td>
                             <td><%= expDate.toLocaleDateString('tr-TR') %></td>
                             <td>
                                 <% if (isExpired) { %>

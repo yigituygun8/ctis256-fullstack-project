@@ -218,6 +218,15 @@
         document.getElementById('cart-grand-total').textContent = '₺' + parseFloat(grandTotal).toFixed(2);
     }
 
+    // Event delegation for dynamically added cart buttons
+    document.addEventListener('click', (e) => {
+        if (e.target.classList.contains('btn-add-cart')) {
+            const itemID = e.target.dataset.itemId;
+            const marketID = e.target.dataset.marketId;
+            addToCart(itemID, marketID);
+        }
+    });
+    
     async function addToCart(itemID, marketID) {
       const res = await fetch('/cart/add', {
         method: 'POST',
@@ -229,14 +238,6 @@
       else alert('Could not add to cart.');
     }
 
-    // Event delegation for dynamically added cart buttons
-    document.addEventListener('click', (e) => {
-        if (e.target.classList.contains('btn-add-cart')) {
-            const itemID = e.target.dataset.itemId;
-            const marketID = e.target.dataset.marketId;
-            addToCart(itemID, marketID);
-        }
-    });
 
     async function updateQuantity(itemID, quantity) {
         const res = await fetch('/cart/update', {

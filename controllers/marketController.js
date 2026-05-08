@@ -1,7 +1,6 @@
 import { pool } from "../config/dbpool.js";
 import bcrypt from "bcrypt";
 import { validationResult } from "express-validator";
-import { isBcryptHash } from "../utils/password.js";
 
 // Update market profile
 export const updateMarketProfile = async (req, res) => {
@@ -29,11 +28,8 @@ export const updateMarketProfile = async (req, res) => {
         const marketID = currentUser.marketID;
 
         // Password check
-        const isMatch = isBcryptHash(currentUser.password)
-                    ? await bcrypt.compare(currentPassword, currentUser.password)
-                    : currentPassword === currentUser.password;
+        const isMatch = await bcrypt.compare(currentPassword, currentUser.password);
 
-        
         if (!isMatch) {
             req.session.status = { 
                 isSuccess: false, 
