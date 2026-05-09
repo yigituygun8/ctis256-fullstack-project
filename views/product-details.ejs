@@ -47,7 +47,11 @@
   <!-- PRODUCT DETAIL -->
    <main class="page-main">
        <div class="container">
-         <a href="/search?keyword=<%= keyword %>&page=<%= currentPage %>" class="back-link">← Back to deals</a>
+        <% if(user && user.type === 'consumer') { %>
+          <a href="/search?keyword=<%= keyword %>&page=<%= currentPage %>" class="back-link">← Back to deals</a>
+        <% } else { %>
+          <a href="/products" class="back-link">← Back to deals</a>
+        <% } %>
      
          <div class="detail-layout">
      
